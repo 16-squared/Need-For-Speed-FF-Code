@@ -39,6 +39,8 @@ public class Depositor {
 
     private boolean firstCapLoop = true;
 
+    public static double armPositionThreshold = 5;
+
     public static double armInPosition = 10, armLevelOnePosition = 100, armLevelTwoPosition = 200, armLevelThreePosition = 400, armCapingPosition = 500;
 
     public double capAngleOffset;
@@ -108,6 +110,47 @@ public class Depositor {
     }
 
 
+    public boolean readyToDeposit(){
+        if (armLevel== ArmLevel.ARMLEVEL_CAP) return true;
+        else if (armLevel == ArmLevel.ARMLEVEL_1 && Math.abs(armLevelOnePosition-v4bMotor.getCurrentPosition())<armPositionThreshold) return true;
+        else if (armLevel == ArmLevel.ARMLEVEL_2 && Math.abs(armLevelTwoPosition-v4bMotor.getCurrentPosition())<armPositionThreshold) return true;
+        else if (armLevel == ArmLevel.ARMLEVEL_3 && Math.abs(armLevelThreePosition-v4bMotor.getCurrentPosition())<armPositionThreshold) return true;
+        else return false;
+    }
+
+
+
+
+    //depositor servo stuff
+    public static double depositorServoClosedPosition = 0, depositorServoOpenPosition = .3;
+
+    public boolean depositorDoorIsOpen = false;
+
+
+    public void closeDepositor() {
+        if (readyToDeposit()) {
+            depositorServo.setPosition(depositorServoClosedPosition);
+            depositorDoorIsOpen = false;
+        }
+    }
+
+    public void openDepositor() {
+
+        if (readyToDeposit()) {
+            depositorServo.setPosition(depositorServoOpenPosition);
+            depositorDoorIsOpen = false;
+        }
+    }
+
+    public void depositorServoToggle(){
+        if(depositorDoorIsOpen && readyToDeposit()) closeDepositor();
+        else if(readyToDeposit()) openDepositor();
+    }
+
+
+
+
+
 
 
 
@@ -115,6 +158,10 @@ public class Depositor {
 
         v4bMotor = new MotorEx(hwMap, "arm", Motor.GoBILDA.RPM_117);
         v4bMotor.setRunMode(Motor.RunMode.RawPower);
+
+        depositorServo = hwMap.servo.get("depositorServo");
+
+        capServo = hwMap.servo.get("capServo");
     }
 
 
