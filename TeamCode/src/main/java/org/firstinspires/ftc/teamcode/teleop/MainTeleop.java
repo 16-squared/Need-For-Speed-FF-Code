@@ -23,12 +23,37 @@ public class MainTeleop extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()){
+
+            //dt powers
             drivetrain.setDrivePowers(pad1.getLeftY(), pad1.getRightY());
+
+            //arm positions
+            if(pad2.wasJustPressed(GamepadKeys.Button.A)){
+                depositor.setArmLevelIn();
+            }
+
+            if(pad2.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)){
+                depositor.setArmLevelCapping();
+            }
 
             depositor.setCapAngleOffset(pad2.isDown(GamepadKeys.Button.DPAD_UP), pad2.isDown(GamepadKeys.Button.DPAD_DOWN));
 
-            depositor.updateArmPosition();
+           if(depositor.armLevel != Depositor.ArmLevel.ARMLEVEL_CAP) {
 
+            if(pad2.wasJustPressed(GamepadKeys.Button.X)){
+                depositor.setArmLevelOne();
+            }
+
+            if(pad2.wasJustPressed(GamepadKeys.Button.Y)){
+                depositor.setArmLevelTwo();
+            }
+
+               if(pad2.wasJustPressed(GamepadKeys.Button.B)) {
+                   depositor.setArmLevelThree();
+               }
+           }
+
+            depositor.updateArmPosition();
 
 
 

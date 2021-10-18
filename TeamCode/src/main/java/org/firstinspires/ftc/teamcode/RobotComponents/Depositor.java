@@ -36,14 +36,6 @@ public class Depositor {
         return armLevel != ArmLevel.ARMLEVEL_IN;
     }
 
-    public int armLevel(){
-        if (armLevel == ArmLevel.ARMLEVEL_IN) return 0;
-        if (armLevel == ArmLevel.ARMLEVEL_1) return 1;
-        if (armLevel == ArmLevel.ARMLEVEL_2) return 2;
-        if (armLevel == ArmLevel.ARMLEVEL_3) return 3;
-        if (armLevel == ArmLevel.ARMLEVEL_CAP) return 4;
-        else return 5;
-    }
 
     private boolean firstCapLoop = true;
 
@@ -53,14 +45,17 @@ public class Depositor {
 
     public static double armP = 0, armD = 0, armMG = 1;
 
-    PIDController armPID = new PIDController(armP, 0, armD);
+
 
     public void setCapAngleOffset(boolean dpadUp, boolean dpadDown){
         if(dpadUp) capAngleOffset+=1;
         if(dpadDown) capAngleOffset-=1;
     }
 
-    public void setArmPosition(double sp){
+
+    PIDController armPID = new PIDController(armP, 0, armD);
+
+    private void setArmPosition(double sp){
     /*    double pv = v4bMotor.getCurrentPosition();
         double error = sp - pv; */
 

@@ -13,7 +13,7 @@ public class Drivetrain {
 
     Depositor depositor = new Depositor();
 
-    public Motor rightMotorOne, rightMotorTwo, leftMotorOne, leftMotorTwo;
+    public Motor rightMotorOne, rightMotorTwo, rightMotorThree, leftMotorOne, leftMotorTwo, leftMotorThree;
 
 
 
@@ -28,16 +28,18 @@ public class Drivetrain {
     public Drivetrain(){
 
         rightMotorOne = new Motor(hwMap, "rightMotorOne", Motor.GoBILDA.RPM_435);
-        rightMotorTwo = new Motor(hwMap, "rightMotor", Motor.GoBILDA.RPM_435);
+        rightMotorTwo = new Motor(hwMap, "rightMotorTwo", Motor.GoBILDA.RPM_435);
+        rightMotorThree = new Motor(hwMap, "rightMotorThree", Motor.GoBILDA.RPM_435);
         leftMotorOne = new Motor(hwMap, "leftMotorOne", Motor.GoBILDA.RPM_435);
         leftMotorTwo = new Motor(hwMap, "leftMotorTwo", Motor.GoBILDA.RPM_435);
+        leftMotorThree = new Motor(hwMap, "leftMotorTwo", Motor.GoBILDA.RPM_435);
 
 
-        rightDriveMotors = new MotorGroup(rightMotorOne, rightMotorTwo);
+        rightDriveMotors = new MotorGroup(rightMotorOne, rightMotorTwo, rightMotorThree);
         rightDriveMotors.setInverted(true);
         rightDriveMotors.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        leftDriveMotors = new MotorGroup(leftMotorOne, leftMotorTwo);
+        leftDriveMotors = new MotorGroup(leftMotorOne, leftMotorTwo, leftMotorThree);
         leftDriveMotors.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
     }
 
