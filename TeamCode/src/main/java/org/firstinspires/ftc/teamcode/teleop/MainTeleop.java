@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.RobotComponents.Depositor;
 import org.firstinspires.ftc.teamcode.RobotComponents.Drivetrain;
+import org.firstinspires.ftc.teamcode.RobotComponents.DuckMec;
 import org.firstinspires.ftc.teamcode.RobotComponents.Intake;
 
 @TeleOp(name = "TeleOP", group = "Linear Opmode")
@@ -20,11 +21,13 @@ public class MainTeleop extends LinearOpMode {
         GamepadEx pad1 = new GamepadEx(gamepad1);
         GamepadEx pad2 = new GamepadEx(gamepad2);
         Intake intake = new Intake();
+        DuckMec duckMec = new DuckMec();
 
         waitForStart();
         while (opModeIsActive()){
 
         //controller one
+
             //dt powers
             drivetrain.setDrivePowers(pad1.getLeftY(), pad1.getRightY());
 
@@ -35,6 +38,15 @@ public class MainTeleop extends LinearOpMode {
                 //intake reversal (hold x)
             if(pad1.isDown(GamepadKeys.Button.X)) intake.reverseIntake();
             if(pad1.wasJustReleased(GamepadKeys.Button.X)) intake.returnToPreviousIntakeState();
+
+            //duck mec
+                //toggle duck mec (press RB)
+            if(pad1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) duckMec.toggleDuckMec(false);
+
+
+
+
+
 
         //controller two
 
@@ -73,17 +85,6 @@ public class MainTeleop extends LinearOpMode {
             if(pad2.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
                 depositor.depositorServoToggle();
             }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
