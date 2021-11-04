@@ -29,6 +29,7 @@ public class MainTeleop extends LinearOpMode {
         boolean firstloop = true;
 
         waitForStart();
+        depositor.armLevel = Depositor.ArmLevel.ARMLEVEL_IN;
         while (opModeIsActive()){
 
 
@@ -45,7 +46,7 @@ public class MainTeleop extends LinearOpMode {
             //arm positions
             depositor.setPreviousArmLevel();
             //Bring arm in (press y)
-            if(pad1.wasJustPressed(GamepadKeys.Button.Y)){
+            if(pad1.gamepad.y){
                 depositor.setArmLevelIn();
             }
          /*   //Bring arm to cap (press LB)
@@ -57,15 +58,15 @@ public class MainTeleop extends LinearOpMode {
 */
             if(depositor.armLevel != Depositor.ArmLevel.ARMLEVEL_CAP) {
                 //Bring arm to low goal (press B)
-                if(pad1.wasJustPressed(GamepadKeys.Button.B)){
+                if(pad1.gamepad.b){
                     depositor.setArmLevelOne();
                 }
                 //Bring arm to mid goal (press A)
-                if(pad1.wasJustPressed(GamepadKeys.Button.A)){
+                if(pad1.gamepad.a){
                     depositor.setArmLevelTwo();
                 }
                 //Bring arm to high goal (press X)
-                if(pad1.wasJustPressed(GamepadKeys.Button.X)) {
+                if(pad1.gamepad.x) {
                     depositor.setArmLevelThree();
                 }
             }

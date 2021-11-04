@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -18,7 +19,7 @@ public class Depositor {
 
     Intake intake;
 
-    public MotorEx v4bMotor;
+    public DcMotor v4bMotor;
 
     public Servo depositorServo, capServo;
 
@@ -50,14 +51,15 @@ public class Depositor {
 
     public double capAngleOffset;
 
-    public static double armP = 0, armD = 0, armMG = 1;
+    public static double armP = 0.05, armD = 0, armMG = 0;
 
 
     public Depositor(HardwareMap ahw){
         hwMap = ahw;
         intake = new Intake(hwMap);
-        v4bMotor = new MotorEx(hwMap, "arm", Motor.GoBILDA.RPM_117);
-        v4bMotor.setRunMode(Motor.RunMode.RawPower);
+       // v4bMotor = new MotorEx(hwMap, "arm", Motor.GoBILDA.RPM_117);
+        v4bMotor = hwMap.get(DcMotor.class, "arm");
+        v4bMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         depositorServo = hwMap.servo.get("depositorServo");
 
@@ -77,7 +79,7 @@ public class Depositor {
         double error = sp - pv; */
 
         double pidf = armPID.calculate(v4bMotor.getCurrentPosition(), sp) + armMG * Math.sin(Math.toRadians(ticksToArmAngle(sp)));
-        v4bMotor.motor.setPower(pidf);
+        v4bMotor.setPower(pidf);
           //      v4bMotor.set(pidf);
 
     }
@@ -88,7 +90,7 @@ public class Depositor {
 
 
     public double ticksToArmAngle(double ticks){  //calculates arm angle to the vertical
-        return (ticks)/v4bMotor.getCPR()*.8*360;
+        return ((ticks-35)/1425.1*.8*360);
     }
 
     public void updateArmPosition(){
