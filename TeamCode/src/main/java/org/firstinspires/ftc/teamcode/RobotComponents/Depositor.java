@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 @Config
 public class Depositor {
@@ -79,7 +80,7 @@ public class Depositor {
         double error = sp - pv; */
 
         double pidf = armPID.calculate(v4bMotor.getCurrentPosition(), sp) + armMG * Math.sin(Math.toRadians(ticksToArmAngle(sp)));
-        v4bMotor.setPower(pidf);
+        v4bMotor.setPower(Range.clip(pidf, -.5, .75));
           //      v4bMotor.set(pidf);
 
     }
