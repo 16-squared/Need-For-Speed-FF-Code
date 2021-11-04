@@ -54,7 +54,7 @@ public class MainTeleop extends LinearOpMode {
                 intake.runIntake();
             }
 
-            if(pad1.gamepad.right_bumper && intake.intakeState != Intake.IntakeState.STOPPED){
+            if(pad1.gamepad.right_bumper && intake.intakeState != Intake.IntakeState.STOPPED && depositor.armLevel==Depositor.ArmLevel.ARMLEVEL_IN){
                 intake.intakeStopperIn();
             }
 
