@@ -16,32 +16,82 @@ public class MainTeleop extends LinearOpMode {
 
     @Override
     public void runOpMode(){
-        Depositor depositor = new Depositor();
-        Drivetrain drivetrain = new Drivetrain();
+        Depositor depositor = new Depositor(hardwareMap);
+        Drivetrain drivetrain = new Drivetrain(hardwareMap);
         GamepadEx pad1 = new GamepadEx(gamepad1);
         GamepadEx pad2 = new GamepadEx(gamepad2);
-        Intake intake = new Intake();
-        DuckMec duckMec = new DuckMec();
+        Intake intake = new Intake(hardwareMap);
+        DuckMec duckMec = new DuckMec(hardwareMap);
+
+        boolean depositorDoorHasSwitched = false;
+        boolean openDepositorDoor = false;
+
+        boolean firstloop = true;
 
         waitForStart();
         while (opModeIsActive()){
 
+
         //controller one
 
             //dt powers
-            drivetrain.setDrivePowers(pad1.getLeftY(), pad1.getRightY());
+            drivetrain.setDrivePowers(pad1.getLeftY(), pad1.getRightX());
 
-            //intake controls
-                //toggle intake forwards and off (press a)
-            if(pad1.wasJustPressed(GamepadKeys.Button.A)) intake.toggleIntakeForwards();
 
-                //intake reversal (hold x)
-            if(pad1.isDown(GamepadKeys.Button.X)) intake.reverseIntake();
-            if(pad1.wasJustReleased(GamepadKeys.Button.X)) intake.returnToPreviousIntakeState();
 
-            //duck mec
-                //toggle duck mec (press RB)
-            if(pad1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) duckMec.toggleDuckMec(false);
+
+
+
+            //arm positions
+            depositor.setPreviousArmLevel();
+            //Bring arm in (press y)
+            if(pad1.wasJustPressed(GamepadKeys.Button.Y)){
+                depositor.setArmLevelIn();
+            }
+         /*   //Bring arm to cap (press LB)
+            if(pad1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)){
+                depositor.setArmLevelCapping();
+            }
+            //Adjust capping height (dpad up and down)
+            depositor.setCapAngleOffset(pad2.isDown(GamepadKeys.Button.DPAD_UP), pad2.isDown(GamepadKeys.Button.DPAD_DOWN));
+*/
+            if(depositor.armLevel != Depositor.ArmLevel.ARMLEVEL_CAP) {
+                //Bring arm to low goal (press B)
+                if(pad1.wasJustPressed(GamepadKeys.Button.B)){
+                    depositor.setArmLevelOne();
+                }
+                //Bring arm to mid goal (press A)
+                if(pad1.wasJustPressed(GamepadKeys.Button.A)){
+                    depositor.setArmLevelTwo();
+                }
+                //Bring arm to high goal (press X)
+                if(pad1.wasJustPressed(GamepadKeys.Button.X)) {
+                    depositor.setArmLevelThree();
+                }
+            }
+
+                //open depositor
+            if(pad1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>.05){
+                depositor.openDepositor();
+
+            }
+
+            /*
+            //code for toggling the depositor door with gamepad
+
+            if(pad1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>.05 && !depositorDoorHasSwitched){
+                openDepositorDoor = true;
+            }
+            if(pad1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)<=.05){
+                openDepositorDoor = false;
+                depositorDoorHasSwitched = false;
+            }
+
+            if(openDepositorDoor && !depositorDoorHasSwitched){
+                depositor.depositorServoToggle();
+                depositorDoorHasSwitched = true;
+            }
+*/
 
 
 
@@ -50,42 +100,45 @@ public class MainTeleop extends LinearOpMode {
 
         //controller two
 
-            //arm positions
-                    //Bring arm in (press a)
-            if(pad2.wasJustPressed(GamepadKeys.Button.A)){
-                depositor.setArmLevelIn();
-            }
+
                     //Bring arm to cap (press LB)
             if(pad2.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)){
                 depositor.setArmLevelCapping();
             }
-                    //Adjust capping height (dpad up and down)
+            //Adjust capping height (dpad up and down)
             depositor.setCapAngleOffset(pad2.isDown(GamepadKeys.Button.DPAD_UP), pad2.isDown(GamepadKeys.Button.DPAD_DOWN));
 
-           if(depositor.armLevel != Depositor.ArmLevel.ARMLEVEL_CAP) {
 
-                    //Bring arm to low goal (press x)
-            if(pad2.wasJustPressed(GamepadKeys.Button.X)){
-                depositor.setArmLevelOne();
-            }
-                    //Bring arm to mid goal (press y)
-            if(pad2.wasJustPressed(GamepadKeys.Button.Y)){
-                depositor.setArmLevelTwo();
-            }
-                    //Bring arm to high goal (press b)
-               if(pad2.wasJustPressed(GamepadKeys.Button.B)) {
-                   depositor.setArmLevelThree();
-               }
-           }
+
+            //duck mec
+                    //toggle duck mec (press RB)
+            if(pad2.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) duckMec.toggleDuckMec(false);
+
+            //intake controls
+                  //toggle intake forwards and off (press a)
+            if(pad2.wasJustPressed(GamepadKeys.Button.A)) intake.toggleIntakeForwards();
+
+                  //intake reversal (hold x)
+            if(pad2.isDown(GamepadKeys.Button.X)) intake.reverseIntake();
+            if(pad2.wasJustReleased(GamepadKeys.Button.X)) intake.returnToPreviousIntakeState();
+
 
             depositor.updateArmPosition();
 
+           depositor.intakeControl();
+
+           /*
 
                     //drop elements (press RB)
             if(pad2.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
                 depositor.depositorServoToggle();
-            }
+            } //todo change this method so you can hold the button and it will open the door once readyToDeposit is true
 
+*/
+
+            telemetry.addData("arm position", depositor.v4bMotor.getCurrentPosition());
+            telemetry.addData("arm state", depositor.armLevel);
+            telemetry.update();
 
 
 

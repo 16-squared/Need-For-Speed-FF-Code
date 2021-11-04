@@ -13,7 +13,10 @@ public class Depositor {
 
 
 
+
     public HardwareMap hwMap;
+
+    Intake intake;
 
     public MotorEx v4bMotor;
 
@@ -21,6 +24,8 @@ public class Depositor {
 
 
     public ArmLevel armLevel;
+
+    public ArmLevel previousArmLevel;
 
     ElapsedTime timer = new ElapsedTime();
 
@@ -41,13 +46,23 @@ public class Depositor {
 
     public static double armPositionThreshold = 5;
 
-    public static double armInPosition = 10, armLevelOnePosition = 100, armLevelTwoPosition = 200, armLevelThreePosition = 400, armCapingPosition = 500;
+    public static double armInPosition = 0, armLevelOnePosition = 100, armLevelTwoPosition = 200, armLevelThreePosition = 400, armCapingPosition = 500;
 
     public double capAngleOffset;
 
     public static double armP = 0, armD = 0, armMG = 1;
 
 
+    public Depositor(HardwareMap ahw){
+        hwMap = ahw;
+        intake = new Intake(hwMap);
+        v4bMotor = new MotorEx(hwMap, "arm", Motor.GoBILDA.RPM_117);
+        v4bMotor.setRunMode(Motor.RunMode.RawPower);
+
+        depositorServo = hwMap.servo.get("depositorServo");
+
+        capServo = hwMap.servo.get("capServo");
+    }
 
     public void setCapAngleOffset(boolean dpadUp, boolean dpadDown){
         if(dpadUp) capAngleOffset+=1;
@@ -62,11 +77,17 @@ public class Depositor {
         double error = sp - pv; */
 
         double pidf = armPID.calculate(v4bMotor.getCurrentPosition(), sp) + armMG * Math.sin(Math.toRadians(ticksToArmAngle(sp)));
-        v4bMotor.set(pidf);
+        v4bMotor.motor.setPower(pidf);
+          //      v4bMotor.set(pidf);
+
     }
 
-    //calculates arm angle to the vertical
-    public double ticksToArmAngle(double ticks){
+    public void updatePIDCoeff(){
+        armPID = new PIDController(armP, 0, armD);
+    }
+
+
+    public double ticksToArmAngle(double ticks){  //calculates arm angle to the vertical
         return (ticks)/v4bMotor.getCPR()*.8*360;
     }
 
@@ -92,6 +113,9 @@ public class Depositor {
         }
     }
 
+
+
+    //setting arm lvls
     public void setArmLevelIn(){
         armLevel = ArmLevel.ARMLEVEL_IN;
     }
@@ -109,7 +133,13 @@ public class Depositor {
         armLevel = ArmLevel.ARMLEVEL_CAP;
     }
 
+    public void setPreviousArmLevel() {
+        previousArmLevel = armLevel;
+    }
 
+
+
+    //checks if arm is out enough to be ready to deposit
     public boolean readyToDeposit(){
         if (armLevel== ArmLevel.ARMLEVEL_CAP) return true;
         else if (armLevel == ArmLevel.ARMLEVEL_1 && Math.abs(armLevelOnePosition-v4bMotor.getCurrentPosition())<armPositionThreshold) return true;
@@ -125,7 +155,6 @@ public class Depositor {
     public static double depositorServoClosedPosition = 0, depositorServoOpenPosition = .3;
 
     public boolean depositorDoorIsOpen = false;
-
 
     public void closeDepositor() {
         if (readyToDeposit()) {
@@ -143,26 +172,37 @@ public class Depositor {
     }
 
     public void depositorServoToggle(){
-        if(depositorDoorIsOpen && readyToDeposit()) closeDepositor();
+        if(depositorDoorIsOpen) closeDepositor();
         else if(readyToDeposit()) openDepositor();
     }
 
 
 
-
-
-
-
-
-    public Depositor(){
-
-        v4bMotor = new MotorEx(hwMap, "arm", Motor.GoBILDA.RPM_117);
-        v4bMotor.setRunMode(Motor.RunMode.RawPower);
-
-        depositorServo = hwMap.servo.get("depositorServo");
-
-        capServo = hwMap.servo.get("capServo");
+    public void setArmAngle(double ticks){
+        setArmPosition(ticks);
     }
+
+
+
+
+
+    //change intake based on states of depositor
+
+    public void intakeControl(){
+        if(previousArmLevel != armLevel){
+            if(previousArmLevel == ArmLevel.ARMLEVEL_IN) {
+                intake.intakeStopperOut();
+                intake.stopIntake();
+            }
+            else if(armLevel == ArmLevel.ARMLEVEL_IN){
+                intake.intakeStopperOut();
+                intake.runIntake();
+            }
+        }
+    }
+
+
+
 
 
 

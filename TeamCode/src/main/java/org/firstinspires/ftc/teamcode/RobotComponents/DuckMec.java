@@ -14,6 +14,11 @@ public class DuckMec {
 
     public static double duckSpeed = 1;
 
+    public DuckMec(HardwareMap ahw){
+        hwMap = ahw;
+        duckServo = hwMap.crservo.get("duckServo");
+    }
+
     public void runDuckMec(boolean redSide){
         if(redSide) duckServo.setPower(duckSpeed);
         else duckServo.setPower(-1*duckSpeed);
@@ -37,7 +42,5 @@ public class DuckMec {
 
 
 
-    public DuckMec(){
-        duckServo = hwMap.crservo.get("duckServo");
-    }
+
 }

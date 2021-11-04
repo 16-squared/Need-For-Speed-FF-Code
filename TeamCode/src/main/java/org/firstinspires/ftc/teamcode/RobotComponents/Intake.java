@@ -5,7 +5,6 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 @Config
 public class Intake {
@@ -18,7 +17,9 @@ public class Intake {
 
     public static double intakeSlowSpeed = .4, intakeFastSpeed = 1, intakeReversedSpeed = -.7;
 
-    public boolean intakeStopperIsUp = true, intakeRunningForwards = false;
+    public static double intakeStopperInPosition = .4, intakeStopperOutPosition = 0;
+
+    public boolean intakeStopperIsOut = true, intakeRunningForwards = false;
 
     public IntakeState intakeState;
 
@@ -29,6 +30,18 @@ public class Intake {
         REVERSED,
         FORWARDS_SLOW,
         FORWARDS_FAST
+    }
+
+    public Intake(HardwareMap awh){
+        hwMap = awh;
+        intakeMotor = new MotorEx(hwMap, "intakeMotor", Motor.GoBILDA.RPM_435);
+        intakeMotor.setRunMode(Motor.RunMode.RawPower);
+        intakeMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+
+        intakeState = IntakeState.STOPPED;
+
+        intakeStopper = hwMap.servo.get("intakeStopper");
+
     }
 
 
@@ -63,8 +76,8 @@ public class Intake {
 
     public void updateIntake(){
 
-        if (intakeRunningForwards && intakeStopperIsUp) intakeState = IntakeState.FORWARDS_SLOW;
-        if (intakeRunningForwards && !intakeStopperIsUp) intakeState = IntakeState.FORWARDS_FAST;
+        if (intakeRunningForwards && intakeStopperIsOut) intakeState = IntakeState.FORWARDS_SLOW;
+        if (intakeRunningForwards && !intakeStopperIsOut) intakeState = IntakeState.FORWARDS_FAST;
 
         if(intakeState == IntakeState.STOPPED) intakeMotor.set(0);
         if(intakeState == IntakeState.REVERSED) intakeMotor.set(intakeReversedSpeed);
@@ -75,15 +88,22 @@ public class Intake {
 
 
 
-
-    public Intake(){
-        intakeMotor = new MotorEx(hwMap, "intakeMotor", Motor.GoBILDA.RPM_435);
-        intakeMotor.setRunMode(Motor.RunMode.RawPower);
-        intakeMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
-
-        intakeState = IntakeState.STOPPED;
-
-        intakeStopper = hwMap.servo.get("intakeStopper");
-
+    //intake stopper
+    public void intakeStopperOut(){
+        intakeStopper.setPosition(intakeStopperOutPosition);
+        intakeStopperIsOut = true;
     }
+
+    public void intakeStopperIn(){
+        intakeStopper.setPosition(intakeStopperInPosition);
+        intakeStopperIsOut = false;
+    }
+
+    public void toggleIntakeStopper(){
+        if(intakeStopperIsOut) intakeStopperIn();
+        else intakeStopperOut();
+    }
+
+
+
 }

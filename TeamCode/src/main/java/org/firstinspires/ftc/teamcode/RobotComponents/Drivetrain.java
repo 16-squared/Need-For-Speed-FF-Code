@@ -11,7 +11,7 @@ public class Drivetrain {
 
     public HardwareMap hwMap;
 
-    Depositor depositor = new Depositor();
+    Depositor depositor;
 
     public Motor rightMotorOne, rightMotorTwo, rightMotorThree, leftMotorOne, leftMotorTwo, leftMotorThree;
 
@@ -24,8 +24,9 @@ public class Drivetrain {
     MotorGroup rightDriveMotors, leftDriveMotors;
 
 
-    public Drivetrain(){
-
+    public Drivetrain(HardwareMap ahw){
+        hwMap = ahw;
+        depositor = new Depositor(hwMap);
         rightMotorOne = new Motor(hwMap, "rightMotorOne", Motor.GoBILDA.RPM_435);
         rightMotorTwo = new Motor(hwMap, "rightMotorTwo", Motor.GoBILDA.RPM_435);
         rightMotorThree = new Motor(hwMap, "rightMotorThree", Motor.GoBILDA.RPM_435);
@@ -36,13 +37,27 @@ public class Drivetrain {
 
         rightDriveMotors = new MotorGroup(rightMotorOne, rightMotorTwo, rightMotorThree);
         rightDriveMotors.setInverted(true);
-        rightDriveMotors.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+        rightMotorOne.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        rightMotorTwo.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        rightMotorThree.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
         leftDriveMotors = new MotorGroup(leftMotorOne, leftMotorTwo, leftMotorThree);
-        leftDriveMotors.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+        leftMotorOne.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        leftMotorTwo.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        leftMotorThree.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
     }
 
-    public void setDrivePowers(double leftStickY, double rightStickY){
+
+    public void setDrivePowers(double leftStickY, double rightStickX) {
+
+
+        rightDriveMotors.set(leftStickY - rightStickX);
+        leftDriveMotors.set(leftStickY + rightStickX);
+    }
+
+/*    public void setDrivePowers(double leftStickY, double rightStickY){
 
         if(depositor.armIsOut()){
             speedMultiplier = drivetrainSlowMultiplier;
@@ -54,14 +69,9 @@ public class Drivetrain {
 
 
     }
+*/
+
+
 
 
 }
-
-
-
-
-
-
-
-
