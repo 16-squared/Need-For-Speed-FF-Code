@@ -15,9 +15,9 @@ public class Intake {
 
     Servo intakeStopper;
 
-    public static double intakeSlowSpeed = .4, intakeFastSpeed = 1, intakeReversedSpeed = -.7;
+    public static double intakeSlowSpeed = .7, intakeFastSpeed = 1, intakeReversedSpeed = -.7;
 
-    public static double intakeStopperInPosition = .4, intakeStopperOutPosition = 0;
+    public static double intakeStopperInPosition = .6, intakeStopperOutPosition = 0;
 
     public boolean intakeStopperIsOut = true, intakeRunningForwards = false;
 
@@ -37,6 +37,7 @@ public class Intake {
         intakeMotor = new MotorEx(hwMap, "intakeMotor", Motor.GoBILDA.RPM_435);
         intakeMotor.setRunMode(Motor.RunMode.RawPower);
         intakeMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+        intakeMotor.setInverted(true);
 
         intakeState = IntakeState.STOPPED;
 

@@ -4,6 +4,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.RobotComponents.Depositor;
 import org.firstinspires.ftc.teamcode.RobotComponents.Drivetrain;
@@ -26,9 +27,11 @@ public class MainTeleop extends LinearOpMode {
         boolean depositorDoorHasSwitched = false;
         boolean openDepositorDoor = false;
 
-        boolean firstloop = true;
+        boolean armStateChange = false;
+        boolean rightTriggerDownLastLoop = false;
 
         waitForStart();
+
         depositor.armLevel = Depositor.ArmLevel.ARMLEVEL_IN;
         while (opModeIsActive()){
 
@@ -45,6 +48,17 @@ public class MainTeleop extends LinearOpMode {
 
             //arm positions
             depositor.setPreviousArmLevel();
+
+
+            if (pad1.gamepad.left_bumper){
+                intake.runIntake();
+            }
+
+            if(pad1.gamepad.right_bumper){
+                intake.intakeStopperOut();
+            }
+
+
             //Bring arm in (press y)
             if(pad1.gamepad.y){
                 depositor.setArmLevelIn();
@@ -73,9 +87,21 @@ public class MainTeleop extends LinearOpMode {
 
                 //open depositor
             if(pad1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>.05){
-                depositor.openDepositor();
-
+                if(!depositor.depositorDoorIsOpen && !rightTriggerDownLastLoop && depositor.readyToDeposit()) {
+                    depositor.openDepositor();
+                    rightTriggerDownLastLoop = true;
+                }
             }
+            else rightTriggerDownLastLoop = false;
+
+
+            //reset v4b encoder
+            if(pad1.gamepad.back){
+                depositor.v4bMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                depositor.v4bMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            }
+
+            if(pad1.gamepad.left_bumper) intake.intakeStopperIn();
 
             /*
             //code for toggling the depositor door with gamepad
@@ -124,14 +150,21 @@ public class MainTeleop extends LinearOpMode {
             if(pad2.wasJustReleased(GamepadKeys.Button.X)) intake.returnToPreviousIntakeState();
 
 
-            depositor.updateArmPosition();
+           depositor.updateArmPosition();
+
+           depositor.closeDepositorDoorTimer();
 
            depositor.intakeControl();
+
+           intake.updateIntake();
+
+
+           if(depositor.previousArmLevel != depositor.armLevel) armStateChange = true;
 
            /*
 
                     //drop elements (press RB)
-            if(pad2.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
+           if(pad2.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
                 depositor.depositorServoToggle();
             } //todo change this method so you can hold the button and it will open the door once readyToDeposit is true
 
@@ -139,6 +172,7 @@ public class MainTeleop extends LinearOpMode {
 
             telemetry.addData("arm position", depositor.v4bMotor.getCurrentPosition());
             telemetry.addData("arm state", depositor.armLevel);
+            telemetry.addData("intake", intake.intakeState);
             telemetry.update();
 
 

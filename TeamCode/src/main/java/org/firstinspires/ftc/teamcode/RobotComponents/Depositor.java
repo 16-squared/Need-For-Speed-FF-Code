@@ -31,6 +31,8 @@ public class Depositor {
 
     ElapsedTime timer = new ElapsedTime();
 
+    boolean timerStarted = false;
+
     public enum ArmLevel {
         ARMLEVEL_IN,  /* not extended out */
         ARMLEVEL_1,  /* extended out at height of low goal and neutral hub */
@@ -80,7 +82,7 @@ public class Depositor {
         double error = sp - pv; */
 
         double pidf = armPID.calculate(v4bMotor.getCurrentPosition(), sp) + armMG * Math.sin(Math.toRadians(ticksToArmAngle(sp)));
-        v4bMotor.setPower(Range.clip(pidf, -.5, .75));
+        v4bMotor.setPower(Range.clip(pidf, -.3, .5));
           //      v4bMotor.set(pidf);
 
     }
@@ -171,6 +173,18 @@ public class Depositor {
         if (readyToDeposit()) {
             depositorServo.setPosition(depositorServoOpenPosition);
             depositorDoorIsOpen = false;
+            timer.reset();
+            timerStarted = true;
+        }
+    }
+
+
+    public void closeDepositorDoorTimer(){
+        if(timerStarted){
+            if(timer.milliseconds()>500){
+                closeDepositor();
+                timerStarted = false;
+            }
         }
     }
 
