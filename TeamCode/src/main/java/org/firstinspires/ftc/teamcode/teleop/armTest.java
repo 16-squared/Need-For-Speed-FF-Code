@@ -17,27 +17,21 @@ public class armTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         Depositor depositor = new Depositor(hardwareMap);
-        Drivetrain drivetrain = new Drivetrain(hardwareMap);
+       Drivetrain drivetrain = new Drivetrain(hardwareMap);
         GamepadEx pad1 = new GamepadEx(gamepad1);
-        GamepadEx pad2 = new GamepadEx(gamepad2);
+      GamepadEx pad2 = new GamepadEx(gamepad2);
         Intake intake = new Intake(hardwareMap);
-        DuckMec duckMec = new DuckMec(hardwareMap);
+       DuckMec duckMec = new DuckMec(hardwareMap);
         double armTarget = 0;
 
         boolean depositorDoorHasSwitched = false;
         boolean openDepositorDoor = false;
 
-        boolean firstloop = true;
         waitForStart();
 
         while (opModeIsActive()) {
-
-            if (firstloop) {
-                //depositor.v4bMotor.resetEncoder();
-                depositor.v4bMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                depositor.v4bMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                firstloop = false;
-            }
+            depositor.v4bMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            depositor.v4bMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 /*
             if(pad1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER )||pad1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)){
                 depositor.v4bMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -51,10 +45,7 @@ public class armTest extends LinearOpMode {
 
 
             depositor.setArmAngle(armTarget);
-            if (gamepad1.a) {
-                intake.runIntake();
-            }
-            intake.updateIntake();
+
 
 
             telemetry.addData("arm position", depositor.v4bMotor.getCurrentPosition());

@@ -18,7 +18,7 @@ public class Depositor {
 
     public HardwareMap hwMap;
 
-    Intake intake;
+   // Intake intake;
 
     public DcMotor v4bMotor;
 
@@ -59,7 +59,7 @@ public class Depositor {
 
     public Depositor(HardwareMap ahw){
         hwMap = ahw;
-        intake = new Intake(hwMap);
+       // intake = new Intake(hwMap);
        // v4bMotor = new MotorEx(hwMap, "arm", Motor.GoBILDA.RPM_117);
         v4bMotor = hwMap.get(DcMotor.class, "arm");
         v4bMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -200,7 +200,7 @@ public class Depositor {
     }
 
 
-
+/*
 
 
     //change intake based on states of depositor
@@ -219,7 +219,7 @@ public class Depositor {
     }
 
 
-
+*/
 
 
 

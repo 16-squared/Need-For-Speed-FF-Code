@@ -15,11 +15,13 @@ public class Intake {
 
     Servo intakeStopper;
 
+    Depositor depositor;
+
     public static double intakeSlowSpeed = .7, intakeFastSpeed = 1, intakeReversedSpeed = -.7;
 
-    public static double intakeStopperInPosition = .6, intakeStopperOutPosition = 0;
+    public static double intakeStopperInPosition = .6, intakeStopperOutPosition = 0.05;
 
-    public boolean intakeStopperIsOut = true, intakeRunningForwards = false;
+    public boolean intakeStopperIsOut = true, intakeRunningForwards = false, armStateChange = false;;
 
     public IntakeState intakeState;
 
@@ -42,6 +44,8 @@ public class Intake {
         intakeState = IntakeState.STOPPED;
 
         intakeStopper = hwMap.servo.get("intakeStopper");
+
+        depositor = new Depositor(hwMap);
 
     }
 
@@ -76,6 +80,8 @@ public class Intake {
 
 
     public void updateIntake(){
+      //  if(intakeStopper.getPosition()==intakeStopperOutPosition) intakeStopperIsOut = true;
+       // else intakeStopperIsOut = false;
 
         if (intakeRunningForwards && intakeStopperIsOut) intakeState = IntakeState.FORWARDS_SLOW;
         if (intakeRunningForwards && !intakeStopperIsOut) intakeState = IntakeState.FORWARDS_FAST;
@@ -84,6 +90,19 @@ public class Intake {
         if(intakeState == IntakeState.REVERSED) intakeMotor.set(intakeReversedSpeed);
         if(intakeState == IntakeState.FORWARDS_SLOW) intakeMotor.set(intakeSlowSpeed);
         if(intakeState == IntakeState.FORWARDS_FAST) intakeMotor.set(intakeFastSpeed);
+
+
+        if(armStateChange){
+            if(depositor.armLevel == Depositor.ArmLevel.ARMLEVEL_IN) {
+                intakeStopperOut();
+                runIntake();
+            }
+            else {
+                intakeStopperOut();
+                stopIntake();
+            }
+            armStateChange = false;
+        }
     }
 
 

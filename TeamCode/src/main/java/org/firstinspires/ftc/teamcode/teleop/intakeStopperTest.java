@@ -13,10 +13,18 @@ public class intakeStopperTest extends LinearOpMode {
         Intake intake = new Intake(hardwareMap);
         waitForStart();
         while (opModeIsActive()) {
+            if (gamepad1.x) intake.runIntake();
+            if (gamepad1.y) intake.stopIntake();
 
 
             if (gamepad1.a) intake.intakeStopperIn();
             if(gamepad1.b) intake.intakeStopperOut();
+
+            intake.updateIntake();
+
+            telemetry.addData("state", intake.intakeState);
+            telemetry.addData("running forwards", intake.intakeRunningForwards);
+            telemetry.update();
         }
     }
 }

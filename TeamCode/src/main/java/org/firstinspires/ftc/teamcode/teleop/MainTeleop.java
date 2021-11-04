@@ -27,7 +27,7 @@ public class MainTeleop extends LinearOpMode {
         boolean depositorDoorHasSwitched = false;
         boolean openDepositorDoor = false;
 
-        boolean armStateChange = false;
+
         boolean rightTriggerDownLastLoop = false;
 
         waitForStart();
@@ -54,8 +54,8 @@ public class MainTeleop extends LinearOpMode {
                 intake.runIntake();
             }
 
-            if(pad1.gamepad.right_bumper){
-                intake.intakeStopperOut();
+            if(pad1.gamepad.right_bumper && intake.intakeState != Intake.IntakeState.STOPPED){
+                intake.intakeStopperIn();
             }
 
 
@@ -101,7 +101,7 @@ public class MainTeleop extends LinearOpMode {
                 depositor.v4bMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }
 
-            if(pad1.gamepad.left_bumper) intake.intakeStopperIn();
+           // if(pad1.gamepad.left_bumper) intake.intakeStopperIn();
 
             /*
             //code for toggling the depositor door with gamepad
@@ -154,12 +154,12 @@ public class MainTeleop extends LinearOpMode {
 
            depositor.closeDepositorDoorTimer();
 
-           depositor.intakeControl();
+          // depositor.intakeControl();
 
            intake.updateIntake();
 
 
-           if(depositor.previousArmLevel != depositor.armLevel) armStateChange = true;
+           if(depositor.previousArmLevel != depositor.armLevel) intake.armStateChange = true;
 
            /*
 
@@ -172,7 +172,9 @@ public class MainTeleop extends LinearOpMode {
 
             telemetry.addData("arm position", depositor.v4bMotor.getCurrentPosition());
             telemetry.addData("arm state", depositor.armLevel);
+            telemetry.addData("arm State Change", intake.armStateChange);
             telemetry.addData("intake", intake.intakeState);
+            telemetry.addData("intake stopper", intake.intakeStopperIsOut);
             telemetry.update();
 
 
