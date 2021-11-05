@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 
 @Config
 public class Drivetrain {
@@ -19,7 +20,9 @@ public class Drivetrain {
 
     public static double drivetrainSlowMultiplier = 1;
 
-    private double speedMultiplier;
+    private double speedMultiplier = 1;
+
+    private double turnMultiplier = .7;
 
     MotorGroup rightDriveMotors, leftDriveMotors;
 
@@ -34,15 +37,19 @@ public class Drivetrain {
         leftMotorTwo = new Motor(hwMap, "leftMotorTwo", Motor.GoBILDA.RPM_435);
         leftMotorThree = new Motor(hwMap, "leftMotorTwo", Motor.GoBILDA.RPM_435);
 
+        rightMotorOne.setInverted(true);
+        rightMotorTwo.setInverted(true);
+        rightMotorThree.setInverted(true);
 
-        rightDriveMotors = new MotorGroup(rightMotorOne, rightMotorTwo, rightMotorThree);
-        rightDriveMotors.setInverted(true);
+
+       // rightDriveMotors = new MotorGroup(rightMotorOne, rightMotorTwo, rightMotorThree);
+        //rightDriveMotors.setInverted(true);
 
         rightMotorOne.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         rightMotorTwo.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         rightMotorThree.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        leftDriveMotors = new MotorGroup(leftMotorOne, leftMotorTwo, leftMotorThree);
+        //leftDriveMotors = new MotorGroup(leftMotorOne, leftMotorTwo, leftMotorThree);
 
         leftMotorOne.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         leftMotorTwo.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
@@ -53,8 +60,23 @@ public class Drivetrain {
     public void setDrivePowers(double leftStickY, double rightStickX) {
 
 
-        rightDriveMotors.set(leftStickY - rightStickX);
-        leftDriveMotors.set(leftStickY + rightStickX);
+       // rightDriveMotors.set(leftStickY * speedMultiplier - rightStickX * turnMultiplier);
+       // leftDriveMotors.set(leftStickY * speedMultiplier + rightStickX * turnMultiplier);
+    }
+
+    public void setDrivePowerAccelerationCurve(double leftStickY, double rightStickX, double leftMotorPower, double rightMotorPower){
+        double rightPowerDelta = Range.clip((leftStickY * speedMultiplier - rightStickX * turnMultiplier) - rightMotorPower, -.7, .7);
+        double leftPowerDelta = Range.clip((leftStickY * speedMultiplier + rightStickX * turnMultiplier) - leftMotorPower, -.7, .7);
+
+        rightMotorOne.set(rightMotorPower + rightPowerDelta);
+        rightMotorTwo.set(rightMotorPower + rightPowerDelta);
+        rightMotorThree.set(rightMotorPower + rightPowerDelta);
+        leftMotorOne.set(leftMotorPower + leftPowerDelta);
+        leftMotorTwo.set(leftMotorPower + leftPowerDelta);
+        leftMotorThree.set(leftMotorPower + leftPowerDelta);
+
+//        rightDriveMotors.set(rightMotorPower + rightPowerDelta);
+//        leftDriveMotors.set(leftMotorPower + leftPowerDelta);
     }
 
 /*    public void setDrivePowers(double leftStickY, double rightStickY){
