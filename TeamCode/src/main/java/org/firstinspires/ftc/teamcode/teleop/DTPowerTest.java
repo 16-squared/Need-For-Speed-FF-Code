@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -19,6 +21,8 @@ public class DTPowerTest extends LinearOpMode {
     public void runOpMode() {
         DrivetrainNoVelo drivetrain = new DrivetrainNoVelo(hardwareMap);
         GamepadEx pad1 = new GamepadEx(gamepad1);
+
+        FtcDashboard dashboard = FtcDashboard.getInstance();
 
 
         waitForStart();
@@ -45,6 +49,19 @@ public class DTPowerTest extends LinearOpMode {
             }
         }
 
+
+
+
+        telemetry.addData("motor power", power);
+        telemetry.addData("correction factor", percentCorrection);
+        telemetry.update();
+
+        TelemetryPacket packet = new TelemetryPacket();
+        packet.put("left velocity", drivetrain.leftMotorOne.getCorrectedVelocity());
+        packet.put("right velocity", drivetrain.rightMotorOne.getCorrectedVelocity());
+        packet.put("velocity difference", drivetrain.leftMotorOne.getCorrectedVelocity()-drivetrain.rightMotorOne.getCorrectedVelocity());
+
+        dashboard.sendTelemetryPacket(packet);
 
 
 
