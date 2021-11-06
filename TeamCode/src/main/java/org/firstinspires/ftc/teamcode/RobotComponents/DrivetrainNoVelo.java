@@ -72,9 +72,9 @@ public class DrivetrainNoVelo {
         double leftInput = (leftPowerDelta + leftMotorPower);
         double rightInput = (rightPowerDelta + rightMotorPower);
 
-        if(Math.abs(rightStickX)<.1) leftInput = correctionLUT.percentScaling.getClosest(leftPowerDelta + leftMotorPower)*leftInput; //robot is not turning
+        if(Math.abs(rightStickX)<.1) leftInput = correctionLUT.percentScaling(leftPowerDelta + leftMotorPower)*leftInput; //robot is not turning
         else if(Math.abs(leftStickY)<.1) ;//robot is turning (in place)
-        else if(Math.abs(leftStickY)>=.05) leftInput = correctionLUT.percentScaling.getClosest(leftPowerDelta + leftMotorPower)*leftInput;
+        else if(Math.abs(leftStickY)>=.05) leftInput = correctionLUT.percentScaling(leftPowerDelta + leftMotorPower)*leftInput;
 
         //nomalize powers to one (only works when inputs are equal, not when turning
 

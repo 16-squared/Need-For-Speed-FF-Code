@@ -72,8 +72,8 @@ public class Drivetrain {
 
 
     public void setDrivePowerAccelerationCurve(double leftStickY, double rightStickX, double leftMotorPower, double rightMotorPower){
-        double rightPowerDelta = Range.clip((leftStickY * speedMultiplier - rightStickX * turnMultiplier) - rightMotorPower, -.7, .7);
-        double leftPowerDelta = Range.clip((leftStickY * speedMultiplier + rightStickX * turnMultiplier) - leftMotorPower, -.7, .7);
+        double rightPowerDelta = Range.clip((leftStickY * speedMultiplier - rightStickX * turnMultiplier) - rightMotorPower, -.07, .07);
+        double leftPowerDelta = Range.clip((leftStickY * speedMultiplier + rightStickX * turnMultiplier) - leftMotorPower, -.07, .07);
 
         rightMotorOne.set(rightMotorPower + rightPowerDelta);
         rightMotorTwo.set(rightMotorPower + rightPowerDelta);

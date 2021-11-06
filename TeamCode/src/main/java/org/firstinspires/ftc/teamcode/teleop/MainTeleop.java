@@ -13,6 +13,8 @@ import org.firstinspires.ftc.teamcode.RobotComponents.Depositor;
 import org.firstinspires.ftc.teamcode.RobotComponents.DrivetrainNoVelo;
 import org.firstinspires.ftc.teamcode.RobotComponents.DuckMec;
 import org.firstinspires.ftc.teamcode.RobotComponents.Intake;
+import org.firstinspires.ftc.teamcode.old.Drivetrain;
+
 @Config
 @TeleOp(name = "TeleOP", group = "Linear Opmode")
 public class MainTeleop extends LinearOpMode {
@@ -43,8 +45,8 @@ public class MainTeleop extends LinearOpMode {
 
             //dt powers
             //drivetrain.setDrivePowers(pad1.getLeftY(), pad1.getRightX());
-            drivetrain.setDrivePowerAccelerationCurve(pad1.getLeftY(), pad1.getRightX(), drivetrain.leftMotorOne.motor.getPower(), drivetrain.rightMotorOne.motor.getPower());
-
+            //drivetrain.setDrivePowerAccelerationCurve(pad1.getLeftY(), pad1.getRightX(), drivetrain.leftMotorOne.motor.getPower(), drivetrain.rightMotorOne.motor.getPower());
+            drivetrain.setDrivePowerWithLUT(pad1.getLeftY(), pad1.getRightX(), drivetrain.leftMotorOne.motor.getPower(), drivetrain.rightMotorOne.motor.getPower());
 
 
 

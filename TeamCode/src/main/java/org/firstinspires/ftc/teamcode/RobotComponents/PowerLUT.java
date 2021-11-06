@@ -4,13 +4,34 @@ import com.arcrobotics.ftclib.util.LUT;
 
 public class PowerLUT {
 
-    LUT<Double, Double> percentScaling = new LUT<Double, Double>()
-    {{
-        //backwards
-        add(-.1, 0.0);
+    double percentScaling(double power){
+        if(power>0){
+            if(power-.2<=.05) return 1.35;
+            if(power-.3<=.05) return 1.26;
+            if(power-.4<=.05) return 1.25;
+            if(power-.5<=.05) return 1.20;
+            if(power-.6<=.05) return 1.17;
+            if(power-.7<=.05) return 1.15;
+            if (power-.8<=.05) return 1.14;
+            else return 1.14;
+        }
 
-        //forwards
-        add(.1, 0.0);//todo tune
-    }};
+        if(power<0){
+            power= Math.abs(power);
+
+            if(power-.2<=.05) return 1.25;
+            if(power-.3<=.05) return 1.17;
+            if(power-.4<=.05) return 1.16;
+            if(power-.5<=.05) return 1.15;
+            if(power-.6<=.05) return 1.12;
+            if(power-.7<=.05) return 1.13;
+            if (power-.8<=.05) return 1.14 ;
+            if (power-.9 <= .05) return 1.16 ;
+            else return 1.16;
+
+
+        }
+        return 1;
+    }
 
 }
