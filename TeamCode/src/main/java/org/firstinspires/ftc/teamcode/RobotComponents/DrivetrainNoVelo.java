@@ -13,6 +13,8 @@ public class DrivetrainNoVelo {
 
     Depositor depositor;
 
+    PowerLUT correctionLUT = new PowerLUT();
+
     public Motor rightMotorOne, rightMotorTwo, rightMotorThree, leftMotorOne, leftMotorTwo, leftMotorThree;
 
 

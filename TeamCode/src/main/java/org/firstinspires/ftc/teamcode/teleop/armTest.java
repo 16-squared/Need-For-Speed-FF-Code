@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.RobotComponents.Depositor;
-import org.firstinspires.ftc.teamcode.RobotComponents.Drivetrain;
+import org.firstinspires.ftc.teamcode.old.Drivetrain;
 import org.firstinspires.ftc.teamcode.RobotComponents.DuckMec;
 import org.firstinspires.ftc.teamcode.RobotComponents.Intake;
 
