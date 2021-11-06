@@ -65,6 +65,32 @@ public class DrivetrainNoVelo {
        // leftDriveMotors.set(leftStickY * speedMultiplier + rightStickX * turnMultiplier);
     }
 
+    public void setDrivePowerWithLUT(double leftStickY, double rightStickX, double leftMotorPower, double rightMotorPower){
+        double rightPowerDelta = Range.clip((leftStickY * speedMultiplier - rightStickX * turnMultiplier) - rightMotorPower, -.05, .05);
+        double leftPowerDelta = Range.clip((leftStickY * speedMultiplier + rightStickX * turnMultiplier) - leftMotorPower, -.05, .05);
+
+        double leftInput = (leftPowerDelta + leftMotorPower);
+        double rightInput = (rightPowerDelta + rightMotorPower);
+
+        if(Math.abs(rightStickX)<.1) leftInput = correctionLUT.percentScaling.getClosest(leftPowerDelta + leftMotorPower)*leftInput; //robot is not turning
+        else if(Math.abs(leftStickY)<.1) ;//robot is turning (in place)
+        else if(Math.abs(leftStickY)>=.05) leftInput = correctionLUT.percentScaling.getClosest(leftPowerDelta + leftMotorPower)*leftInput;
+
+        //nomalize powers to one (only works when inputs are equal, not when turning
+
+        if(leftInput>1 && (leftPowerDelta + leftMotorPower) ==  rightInput){
+            rightInput = rightInput-leftInput+1;
+        }
+
+        //set motor powers
+        rightMotorOne.set(rightInput);
+        rightMotorTwo.set(rightInput);
+        rightMotorThree.set(rightInput);
+        leftMotorOne.set(leftInput);
+        leftMotorTwo.set(leftInput);
+        leftMotorThree.set(leftInput);
+    }
+
     public void setDrivePowerAccelerationCurve(double leftStickY, double rightStickX, double leftMotorPower, double rightMotorPower){
         double rightPowerDelta = Range.clip((leftStickY * speedMultiplier - rightStickX * turnMultiplier) - rightMotorPower, -.05, .05);
         double leftPowerDelta = Range.clip((leftStickY * speedMultiplier + rightStickX * turnMultiplier) - leftMotorPower, -.05, .05);
