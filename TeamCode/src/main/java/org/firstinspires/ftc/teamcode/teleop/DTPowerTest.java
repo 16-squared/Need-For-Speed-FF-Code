@@ -9,14 +9,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.RobotComponents.DrivetrainNoVelo;
-import org.firstinspires.ftc.teamcode.RobotComponents.PowerLUT;
 
 @Config
 @TeleOp(name = "DriveTrain Power Test", group = "Linear Opmode")
 public class DTPowerTest extends LinearOpMode {
 
     public static double power = .1, percentCorrection = 10;
-    double percentoffset;
+    double percentOffset;
     @Override
     public void runOpMode() {
         DrivetrainNoVelo drivetrain = new DrivetrainNoVelo(hardwareMap);
@@ -32,7 +31,7 @@ public class DTPowerTest extends LinearOpMode {
             if(pad1.wasJustPressed(GamepadKeys.Button.DPAD_UP)) percentCorrection+=1;
             if(pad1.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) percentCorrection-=1;
 
-            percentoffset = (percentCorrection+100)/100;
+            percentOffset = (percentCorrection+100)/100;
 
 
 
@@ -43,9 +42,9 @@ public class DTPowerTest extends LinearOpMode {
                 drivetrain.rightMotorOne.set(power);
                 drivetrain.rightMotorTwo.set(power);
                 drivetrain.rightMotorThree.set(power);
-                drivetrain.leftMotorOne.set(power*percentoffset);
-                drivetrain.leftMotorTwo.set(power*percentoffset);
-                drivetrain.leftMotorThree.set(power*percentoffset);
+                drivetrain.leftMotorOne.set(power* percentOffset);
+                drivetrain.leftMotorTwo.set(power* percentOffset);
+                drivetrain.leftMotorThree.set(power* percentOffset);
             }
         }
 
