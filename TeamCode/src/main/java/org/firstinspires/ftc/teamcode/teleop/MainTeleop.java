@@ -174,6 +174,7 @@ public class MainTeleop extends LinearOpMode {
             } //todo change this method so you can hold the button and it will open the door once readyToDeposit is true
 
 */
+
             telemetry.addData("left motor", drivetrain.leftMotorOne.motor.getPower());
             telemetry.addData("right motor", drivetrain.rightMotorOne.motor.getPower());
             telemetry.addData("arm position", depositor.v4bMotor.getCurrentPosition());
