@@ -3,12 +3,11 @@ package org.firstinspires.ftc.teamcode.RobotComponents;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
 @Config
-public class Drivetrain {
+public class DrivetrainWithVelo {
 
     public HardwareMap hwMap;
 
@@ -29,7 +28,7 @@ public class Drivetrain {
     MotorGroup rightDriveMotors, leftDriveMotors;
 
 
-    public Drivetrain(HardwareMap ahw){
+    public DrivetrainWithVelo(HardwareMap ahw){
         hwMap = ahw;
         depositor = new Depositor(hwMap);
         rightMotorOne = new Motor(hwMap, "rightMotorOne", Motor.GoBILDA.RPM_435);
@@ -43,13 +42,13 @@ public class Drivetrain {
         rightMotorTwo.setInverted(true);
         rightMotorThree.setInverted(true);
 
-        rightMotorOne.setRunMode(Motor.RunMode.RawPower);
-       // rightMotorOne.setVeloCoefficients(kP, kI , kD);
-       // rightMotorOne.setFeedforwardCoefficients(0, kV, kA);
+        rightMotorOne.setRunMode(Motor.RunMode.VelocityControl);
+        rightMotorOne.setVeloCoefficients(kP, kI , kD);
+        rightMotorOne.setFeedforwardCoefficients(0, kV, kA);
 
-        leftMotorOne.setRunMode(Motor.RunMode.RawPower);
-        //leftMotorOne.setVeloCoefficients(kP, kI, kD);
-      //  leftMotorOne.setFeedforwardCoefficients(0, kV, kA);
+        leftMotorOne.setRunMode(Motor.RunMode.VelocityControl);
+        leftMotorOne.setVeloCoefficients(kP, kI, kD);
+        leftMotorOne.setFeedforwardCoefficients(0, kV, kA);
 
 
 
@@ -68,20 +67,29 @@ public class Drivetrain {
     }
 
 
+    public void setDrivePowers(double leftStickY, double rightStickX) {
+
+
+       // rightDriveMotors.set(leftStickY * speedMultiplier - rightStickX * turnMultiplier);
+       // leftDriveMotors.set(leftStickY * speedMultiplier + rightStickX * turnMultiplier);
+    }
+
     public void setDrivePowerAccelerationCurve(double leftStickY, double rightStickX, double leftMotorPower, double rightMotorPower){
         double rightPowerDelta = Range.clip((leftStickY * speedMultiplier - rightStickX * turnMultiplier) - rightMotorPower, -.7, .7);
         double leftPowerDelta = Range.clip((leftStickY * speedMultiplier + rightStickX * turnMultiplier) - leftMotorPower, -.7, .7);
 
-        rightMotorOne.set(rightMotorPower + rightPowerDelta);
-        rightMotorTwo.set(rightMotorPower + rightPowerDelta);
-        rightMotorThree.set(rightMotorPower + rightPowerDelta);
-        leftMotorOne.set(leftMotorPower + leftPowerDelta);
-        leftMotorTwo.set(leftMotorPower + leftPowerDelta);
-        leftMotorThree.set(leftMotorPower + leftPowerDelta);
+        rightMotorOne.set(Range.clip(rightMotorPower + rightPowerDelta, -.75, .75));
+        rightMotorTwo.set(rightMotorOne.motor.getPower());
+        rightMotorThree.set(rightMotorOne.motor.getPower());
+
+        leftMotorOne.set(Range.clip(leftMotorPower + leftPowerDelta, -.75, .75));
+        leftMotorTwo.set(leftMotorOne.motor.getPower());
+        leftMotorThree.set(leftMotorOne.motor.getPower());
 
 //        rightDriveMotors.set(rightMotorPower + rightPowerDelta);
 //        leftDriveMotors.set(leftMotorPower + leftPowerDelta);
     }
+
 /*    public void setDrivePowers(double leftStickY, double rightStickY){
 
         if(depositor.armIsOut()){

@@ -1,28 +1,33 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.RobotComponents.Depositor;
 import org.firstinspires.ftc.teamcode.RobotComponents.Drivetrain;
+import org.firstinspires.ftc.teamcode.RobotComponents.DrivetrainNoVelo;
 import org.firstinspires.ftc.teamcode.RobotComponents.DuckMec;
 import org.firstinspires.ftc.teamcode.RobotComponents.Intake;
-
+@Config
 @TeleOp(name = "TeleOP", group = "Linear Opmode")
 public class MainTeleop extends LinearOpMode {
-
 
     @Override
     public void runOpMode(){
         Depositor depositor = new Depositor(hardwareMap);
-        Drivetrain drivetrain = new Drivetrain(hardwareMap);
+        DrivetrainNoVelo drivetrain = new DrivetrainNoVelo(hardwareMap);
         GamepadEx pad1 = new GamepadEx(gamepad1);
         GamepadEx pad2 = new GamepadEx(gamepad2);
         Intake intake = new Intake(hardwareMap);
         DuckMec duckMec = new DuckMec(hardwareMap);
+        FtcDashboard dashboard = FtcDashboard.getInstance();
 
         boolean depositorDoorHasSwitched = false;
         boolean openDepositorDoor = false;
@@ -177,6 +182,15 @@ public class MainTeleop extends LinearOpMode {
             telemetry.addData("intake", intake.intakeState);
             telemetry.addData("intake stopper", intake.intakeStopperIsOut);
             telemetry.update();
+
+
+
+            TelemetryPacket packet = new TelemetryPacket();
+            packet.put("left velocity", drivetrain.leftMotorOne.getCorrectedVelocity());
+            packet.put("left power", drivetrain.leftMotorOne.motor.getPower());
+            packet.put("right velocity", drivetrain.rightMotorOne.getCorrectedVelocity());
+            packet.put("right power", drivetrain.rightMotorOne.motor.getPower());
+            dashboard.sendTelemetryPacket(packet);
 
 
 

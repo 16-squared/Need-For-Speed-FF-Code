@@ -3,12 +3,11 @@ package org.firstinspires.ftc.teamcode.RobotComponents;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
 @Config
-public class Drivetrain {
+public class DrivetrainNoVelo {
 
     public HardwareMap hwMap;
 
@@ -18,18 +17,16 @@ public class Drivetrain {
 
 
 
-    public static double drivetrainSlowMultiplier = 1;
-
-    public static double kP = 1, kI = 0, kD = 0, kV = 1, kA =0;
+    public static double drivetrainSlowMultiplier = 1, percentIncreaseForwardsFast = 10, percentIncreaseBackwardsSlow = 15, percentIncreaseBackwardsFast = 20;
 
     private double speedMultiplier = 1;
 
-    private double turnMultiplier = .5;
+    private double turnMultiplier = .7;
 
     MotorGroup rightDriveMotors, leftDriveMotors;
 
 
-    public Drivetrain(HardwareMap ahw){
+    public DrivetrainNoVelo(HardwareMap ahw){
         hwMap = ahw;
         depositor = new Depositor(hwMap);
         rightMotorOne = new Motor(hwMap, "rightMotorOne", Motor.GoBILDA.RPM_435);
@@ -42,15 +39,6 @@ public class Drivetrain {
         rightMotorOne.setInverted(true);
         rightMotorTwo.setInverted(true);
         rightMotorThree.setInverted(true);
-
-        rightMotorOne.setRunMode(Motor.RunMode.RawPower);
-       // rightMotorOne.setVeloCoefficients(kP, kI , kD);
-       // rightMotorOne.setFeedforwardCoefficients(0, kV, kA);
-
-        leftMotorOne.setRunMode(Motor.RunMode.RawPower);
-        //leftMotorOne.setVeloCoefficients(kP, kI, kD);
-      //  leftMotorOne.setFeedforwardCoefficients(0, kV, kA);
-
 
 
        // rightDriveMotors = new MotorGroup(rightMotorOne, rightMotorTwo, rightMotorThree);
@@ -68,20 +56,49 @@ public class Drivetrain {
     }
 
 
-    public void setDrivePowerAccelerationCurve(double leftStickY, double rightStickX, double leftMotorPower, double rightMotorPower){
-        double rightPowerDelta = Range.clip((leftStickY * speedMultiplier - rightStickX * turnMultiplier) - rightMotorPower, -.7, .7);
-        double leftPowerDelta = Range.clip((leftStickY * speedMultiplier + rightStickX * turnMultiplier) - leftMotorPower, -.7, .7);
+    public void setDrivePowers(double leftStickY, double rightStickX) {
 
-        rightMotorOne.set(rightMotorPower + rightPowerDelta);
-        rightMotorTwo.set(rightMotorPower + rightPowerDelta);
-        rightMotorThree.set(rightMotorPower + rightPowerDelta);
-        leftMotorOne.set(leftMotorPower + leftPowerDelta);
-        leftMotorTwo.set(leftMotorPower + leftPowerDelta);
-        leftMotorThree.set(leftMotorPower + leftPowerDelta);
+
+       // rightDriveMotors.set(leftStickY * speedMultiplier - rightStickX * turnMultiplier);
+       // leftDriveMotors.set(leftStickY * speedMultiplier + rightStickX * turnMultiplier);
+    }
+
+    public void setDrivePowerAccelerationCurve(double leftStickY, double rightStickX, double leftMotorPower, double rightMotorPower){
+        double rightPowerDelta = Range.clip((leftStickY * speedMultiplier - rightStickX * turnMultiplier) - rightMotorPower, -.05, .05);
+        double leftPowerDelta = Range.clip((leftStickY * speedMultiplier + rightStickX * turnMultiplier) - leftMotorPower, -.05, .05);
+
+        double percentScalarForwardsFast = (percentIncreaseForwardsFast +100)/100;
+        double percentScalarBackwardsSlow = (percentIncreaseBackwardsSlow +100)/100;
+        double percentScalarBackwardsFast = (percentIncreaseBackwardsFast +100)/100;
+
+        double leftInput = (leftPowerDelta + leftMotorPower);
+
+        double rightInput = (rightPowerDelta + rightMotorPower);
+
+        if(Math.abs(leftInput + rightInput) <= .07 && leftInput/Math.abs(leftInput) != rightInput/Math.abs(rightInput)){
+            //robot is turning
+        }
+        else if(rightInput>0 && leftInput>0) leftInput = leftInput* percentScalarForwardsFast; //moving forwards
+        else if(leftInput<0 && rightInput<0 && Math.abs(leftMotorOne.motor.getPower())<=.75) leftInput = leftInput* percentScalarBackwardsSlow; //moving backwards slow
+        else if (rightInput< 0 && leftInput<0 && Math.abs(leftMotorOne.motor.getPower())>.75) leftInput = leftInput*percentScalarBackwardsFast; //moving backwards fast
+
+        if(Math.abs(leftStickY)<.05) leftInput = (leftPowerDelta + leftMotorPower);
+
+        if(leftInput>1 && (leftPowerDelta + leftMotorPower) ==  rightInput){
+            rightInput = rightInput-leftInput+1;
+        }
+
+        rightMotorOne.set(rightInput);
+        rightMotorTwo.set(rightInput);
+        rightMotorThree.set(rightInput);
+        leftMotorOne.set(leftInput);
+        leftMotorTwo.set(leftInput);
+        leftMotorThree.set(leftInput);
 
 //        rightDriveMotors.set(rightMotorPower + rightPowerDelta);
 //        leftDriveMotors.set(leftMotorPower + leftPowerDelta);
     }
+
 /*    public void setDrivePowers(double leftStickY, double rightStickY){
 
         if(depositor.armIsOut()){
