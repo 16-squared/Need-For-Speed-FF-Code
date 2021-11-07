@@ -27,7 +27,7 @@ public class Drivetrain {
 
     private double speedMultiplier = 1;
 
-    private double turnMultiplier = .5;
+    private double turnMultiplier = .3;
 
     MotorGroup rightDriveMotors, leftDriveMotors;
 

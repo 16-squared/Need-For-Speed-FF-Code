@@ -50,7 +50,7 @@ public class Depositor {
 
     public static double armPositionThreshold = 5;
 
-    public static double armInPosition = 0, armLevelOnePosition = 100, armLevelTwoPosition = 200, armLevelThreePosition = 400, armCapingPosition = 500;
+    public static double armInPosition = -5, armLevelOnePosition = 75, armLevelTwoPosition = 200, armLevelThreePosition = 500, armCapingPosition = 500;
 
     public double capAngleOffset;
 

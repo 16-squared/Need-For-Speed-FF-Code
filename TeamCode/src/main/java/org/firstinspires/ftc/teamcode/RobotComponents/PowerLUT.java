@@ -19,15 +19,15 @@ public class PowerLUT {
         if(power<0){
             power= Math.abs(power);
 
-            if(power-.2<=.05) return 1.25;
-            if(power-.3<=.05) return 1.17;
-            if(power-.4<=.05) return 1.16;
-            if(power-.5<=.05) return 1.15;
-            if(power-.6<=.05) return 1.12;
-            if(power-.7<=.05) return 1.13;
-            if (power-.8<=.05) return 1.14 ;
-            if (power-.9 <= .05) return 1.16 ;
-            else return 1.16;
+            if(power-.2<=.05) return 1.36;
+            if(power-.3<=.05) return 1.30;
+            if(power-.4<=.05) return 1.23;
+            if(power-.5<=.05) return 1.19;
+            if(power-.6<=.05) return 1.19;
+            if(power-.7<=.05) return 1.19;
+            if (power-.8<=.05) return 1.19 ;
+            if (power-.9 <= .05) return 1.19 ;
+            else return 1.19;
 
 
         }

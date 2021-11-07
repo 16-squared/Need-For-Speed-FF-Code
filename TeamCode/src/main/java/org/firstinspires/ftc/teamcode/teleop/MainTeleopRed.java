@@ -17,8 +17,8 @@ import org.firstinspires.ftc.teamcode.RobotComponents.Intake;
 import org.firstinspires.ftc.teamcode.old.Drivetrain;
 
 @Config
-@TeleOp(name = "TeleOP", group = "Linear Opmode")
-public class MainTeleop extends LinearOpMode {
+@TeleOp(name = "Red TeleOP", group = "Linear Opmode")
+public class MainTeleopRed extends LinearOpMode {
 
     @Override
     public void runOpMode(){
@@ -135,21 +135,30 @@ public class MainTeleop extends LinearOpMode {
 
 
                     //Bring arm to cap (press LB)
-            if(pad2.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)){
-                depositor.setArmLevelCapping();
-            }
+           // if(pad2.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)){
+             //   depositor.setArmLevelCapping();
+            //}
             //Adjust capping height (dpad up and down)
-            depositor.setCapAngleOffset(pad2.isDown(GamepadKeys.Button.DPAD_UP), pad2.isDown(GamepadKeys.Button.DPAD_DOWN));
+            //depositor.setCapAngleOffset(pad2.isDown(GamepadKeys.Button.DPAD_UP), pad2.isDown(GamepadKeys.Button.DPAD_DOWN));
 
 
+            if(gamepad2.dpad_down)depositor.setArmLevelIn();
+
+            if(gamepad2.dpad_up)depositor.setArmLevelThree();
+
+            if(gamepad2.dpad_left)depositor.setArmLevelOne();
 
             //duck mec
-                    //toggle duck mec (press RB)
-            if(pad2.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) duckMec.toggleDuckMec(false);
+                    //toggle duck mec (press b)
+            if(gamepad2.b) duckMec.duckServo.setPower(1);
+            else duckMec.duckServo.setPower(0);
 
             //intake controls
                   //toggle intake forwards and off (press a)
-            if(pad2.wasJustPressed(GamepadKeys.Button.A)) intake.toggleIntakeForwards();
+            if(pad2.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) intake.toggleIntakeForwards();
+
+            if(pad2.getButton(GamepadKeys.Button.LEFT_BUMPER)) intake.intakeStopperIn();
+
 
                   //intake reversal (hold x)
             if(pad2.isDown(GamepadKeys.Button.X)) intake.reverseIntake();

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class DuckMec {
     public HardwareMap hwMap;
 
-    CRServo duckServo;
+    public CRServo duckServo;
 
     public boolean duckMecIsRunning = false;
 

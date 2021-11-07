@@ -21,7 +21,7 @@ public class DrivetrainNoVelo {
 
     public double speedMultiplier = 1;
 
-    public double turnMultiplier = .7;
+    public double turnMultiplier = .6;
 
     MotorGroup rightDriveMotors, leftDriveMotors;
 
@@ -65,6 +65,8 @@ public class DrivetrainNoVelo {
 
     public void setDrivePowerWithLUT(double leftStickY, double rightStickX, double leftMotorPower, double rightMotorPower){
 
+        if (depositor.armIsOut()) turnMultiplier = .3;
+        else turnMultiplier = .6;
         double rightPowerDelta = Range.clip((leftStickY * speedMultiplier - rightStickX * turnMultiplier) - rightMotorPower, -.1, .1);
         double leftPowerDelta = Range.clip((leftStickY * speedMultiplier + rightStickX * turnMultiplier) - leftMotorPower, -.1, .1);
 
