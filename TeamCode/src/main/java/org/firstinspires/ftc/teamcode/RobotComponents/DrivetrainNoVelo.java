@@ -17,13 +17,11 @@ public class DrivetrainNoVelo {
 
     public Motor rightMotorOne, rightMotorTwo, rightMotorThree, leftMotorOne, leftMotorTwo, leftMotorThree;
 
-
-
     public static double drivetrainSlowMultiplier = 1, percentIncreaseForwardsFast = 10, percentIncreaseBackwardsSlow = 15, percentIncreaseBackwardsFast = 20;
 
-    private double speedMultiplier = 1;
+    public double speedMultiplier = 1;
 
-    private double turnMultiplier = .7;
+    public double turnMultiplier = .7;
 
     MotorGroup rightDriveMotors, leftDriveMotors;
 
@@ -66,12 +64,22 @@ public class DrivetrainNoVelo {
     }
 
     public void setDrivePowerWithLUT(double leftStickY, double rightStickX, double leftMotorPower, double rightMotorPower){
-        double rightPowerDelta = Range.clip((leftStickY * speedMultiplier - rightStickX * turnMultiplier) - rightMotorPower, -.05, .05);
-        double leftPowerDelta = Range.clip((leftStickY * speedMultiplier + rightStickX * turnMultiplier) - leftMotorPower, -.05, .05);
 
-        double leftInput = (leftPowerDelta + leftMotorPower);
-       if(Math.abs(leftPowerDelta + leftMotorPower)-Math.abs(leftStickY * speedMultiplier - rightStickX * turnMultiplier)>0) leftInput = (leftPowerDelta + leftMotorPower) * correctionLUT.percentScaling(leftPowerDelta + leftMotorPower);
+        double rightPowerDelta = Range.clip((leftStickY * speedMultiplier - rightStickX * turnMultiplier) - rightMotorPower, -.1, .1);
+        double leftPowerDelta = Range.clip((leftStickY * speedMultiplier + rightStickX * turnMultiplier) - leftMotorPower, -.1, .1);
+
+        double leftInput = leftPowerDelta + leftMotorPower;
+                if(Math.abs(leftMotorPower) < Math.abs(leftInput)) leftInput = (leftPowerDelta + leftMotorPower) * correctionLUT.percentScaling(leftStickY);
         double rightInput = (rightPowerDelta + rightMotorPower);
+
+
+
+
+
+
+
+
+
 
         /* if(Math.abs(rightStickX)<.1) leftInput = correctionLUT.percentScaling(leftPowerDelta + leftMotorPower)*leftInput; //robot is not turning
         else if(Math.abs(leftStickY)<.1) ;//robot is turning (in place)

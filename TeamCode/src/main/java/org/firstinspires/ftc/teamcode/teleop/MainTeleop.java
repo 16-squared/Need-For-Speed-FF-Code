@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.RobotComponents.Depositor;
 import org.firstinspires.ftc.teamcode.RobotComponents.DrivetrainNoVelo;
@@ -174,7 +175,7 @@ public class MainTeleop extends LinearOpMode {
             } //todo change this method so you can hold the button and it will open the door once readyToDeposit is true
 
 */
-
+            telemetry.addData("stick", (pad1.getLeftY() * drivetrain.speedMultiplier + pad1.getRightX() * drivetrain.turnMultiplier) - drivetrain.leftMotorOne.motor.getPower());
             telemetry.addData("left motor", drivetrain.leftMotorOne.motor.getPower());
             telemetry.addData("right motor", drivetrain.rightMotorOne.motor.getPower());
             telemetry.addData("arm position", depositor.v4bMotor.getCurrentPosition());
