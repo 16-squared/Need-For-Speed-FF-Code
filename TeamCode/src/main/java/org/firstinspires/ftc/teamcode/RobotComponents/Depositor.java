@@ -46,9 +46,9 @@ public class Depositor {
 
     private boolean firstCapLoop = true;
 
-    public static double armPositionThreshold = 5, armIntegralThreshold = 20;
+    public static double armPositionThreshold = 5, armIntegralThreshold = 5;
 
-    public static double armInPosition = 0, armLevelOnePosition = 75, armLevelTwoPosition = 200, armLevelThreePosition = -300, armCapingPosition = 500, servoLidOpenPosition = 1, servoLidClosePosition = 0;
+    public static double armInPosition = 0, armLevelOnePosition = 75, armLevelTwoPosition = 200, armLevelThreePosition = -268, armCapingPosition = 500, servoLidOpenPosition = 1, servoLidClosePosition = 0;
 
     public double capAngleOffset;
 

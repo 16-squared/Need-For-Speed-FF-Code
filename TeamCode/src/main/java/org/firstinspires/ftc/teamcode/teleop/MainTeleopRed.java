@@ -9,6 +9,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -81,17 +82,17 @@ public class MainTeleopRed extends LinearOpMode {
             depositor.setPreviousArmLevel();
 
 
-            if (pad1.gamepad.left_bumper){
+            if (pad1.gamepad.a){
                 intake.runIntake();
             }
 
-            if(pad1.gamepad.right_bumper && intake.intakeState != Intake.IntakeState.STOPPED && depositor.armLevel==Depositor.ArmLevel.ARMLEVEL_IN){
+            if(gamepad1.right_stick_button && intake.intakeState != Intake.IntakeState.STOPPED && depositor.armLevel==Depositor.ArmLevel.ARMLEVEL_IN){
                 intake.intakeStopperIn();
             }
 
 
-            //Bring arm in (press y)
-            if(pad1.gamepad.y){
+            //Bring arm in (press Right Bumper)
+            if(gamepad1.right_bumper){
                 depositor.setArmLevelIn();
             }
          /*   //Bring arm to cap (press LB)
@@ -102,22 +103,22 @@ public class MainTeleopRed extends LinearOpMode {
             depositor.setCapAngleOffset(pad2.isDown(GamepadKeys.Button.DPAD_UP), pad2.isDown(GamepadKeys.Button.DPAD_DOWN));
 */
             if(depositor.armLevel != Depositor.ArmLevel.ARMLEVEL_CAP) {
-                //Bring arm to low goal (press B)
-                if(pad1.gamepad.b){
+                //Bring arm to low goal (press Left Trigger)
+                if(pad1.gamepad.left_trigger>.05){
                     depositor.setArmLevelOne();
                 }
-                //Bring arm to mid goal (press A)
-                if(pad1.gamepad.a){
+                //Bring arm to mid goal (press Left Bumper)
+                if(pad1.gamepad.left_bumper){
                     depositor.setArmLevelTwo();
                 }
-                //Bring arm to high goal (press X)
-                if(pad1.gamepad.x) {
+                //Bring arm to high goal (press Right Trigger)
+                if(gamepad1.right_trigger>.05) {
                     depositor.setArmLevelThree();
                 }
             }
 
                 //open depositor
-            if(pad1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>.05){
+            if(gamepad1.a){
                 if(!depositor.depositorDoorIsOpen && !rightTriggerDownLastLoop && depositor.readyToDeposit()) {
                     depositor.openDepositor();
                     rightTriggerDownLastLoop = true;
@@ -128,8 +129,7 @@ public class MainTeleopRed extends LinearOpMode {
 
             //reset v4b encoder
             if(pad1.gamepad.back){
-                depositor.v4bMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                depositor.v4bMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+               offSetAngle = angles.firstAngle;
             }
 
            // if(pad1.gamepad.left_bumper) intake.intakeStopperIn();
@@ -175,7 +175,7 @@ public class MainTeleopRed extends LinearOpMode {
 
             //duck mec
                     //toggle duck mec (press b)
-            if(gamepad2.b) duckMec.duckMotor.set(1);
+            if(gamepad2.b) duckMec.duckMotor.set(.25);
             else duckMec.duckMotor.set(0);
 
             //intake controls
