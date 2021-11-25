@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.RobotComponents;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -22,7 +20,7 @@ public class Depositor {
 
     public DcMotor v4bMotor;
 
-    public Servo depositorServo, capServo;
+    public Servo depositorServo, depositorLid, capServo;
 
 
     public ArmLevel armLevel;
@@ -48,14 +46,15 @@ public class Depositor {
 
     private boolean firstCapLoop = true;
 
-    public static double armPositionThreshold = 5;
+    public static double armPositionThreshold = 5, armIntegralThreshold = 20;
 
-    public static double armInPosition = -5, armLevelOnePosition = 75, armLevelTwoPosition = 200, armLevelThreePosition = 500, armCapingPosition = 500;
+    public static double armInPosition = 0, armLevelOnePosition = 75, armLevelTwoPosition = 200, armLevelThreePosition = -300, armCapingPosition = 500, servoLidOpenPosition = 1, servoLidClosePosition = 0;
 
     public double capAngleOffset;
 
-    public static double armP = 0.05, armD = 0, armMG = 0;
+    public static double armP = 0.05, armD = 0, armI=0, armMG = 0;
 
+    private double I = 0;
 
     public Depositor(HardwareMap ahw){
         hwMap = ahw;
@@ -67,6 +66,8 @@ public class Depositor {
         depositorServo = hwMap.servo.get("depositorServo");
 
         capServo = hwMap.servo.get("capServo");
+
+        depositorLid = hwMap.servo.get("lidServo");
     }
 
     public void setCapAngleOffset(boolean dpadUp, boolean dpadDown){
@@ -82,13 +83,21 @@ public class Depositor {
         double error = sp - pv; */
 
         double pidf = armPID.calculate(v4bMotor.getCurrentPosition(), sp) + armMG * Math.sin(Math.toRadians(ticksToArmAngle(sp)));
-        v4bMotor.setPower(Range.clip(pidf, -.3, .5));
+        v4bMotor.setPower(Range.clip(pidf, -1, 1));
           //      v4bMotor.set(pidf);
 
     }
 
+    public void openServoLid(){
+        depositorLid.setPosition(servoLidOpenPosition);
+    }
+
+    public void closeServoLid(){
+        depositorLid.setPosition(depositorServoClosedPosition);
+    }
+
     public void updatePIDCoeff(){
-        armPID = new PIDController(armP, 0, armD);
+        armPID = new PIDController(armP, I, armD);
     }
 
 
@@ -99,22 +108,35 @@ public class Depositor {
     public void updateArmPosition(){
         if (armLevel == ArmLevel.ARMLEVEL_IN) {
             setArmPosition(armInPosition);
+            openServoLid();
         }
         if(armLevel == ArmLevel.ARMLEVEL_1){
             setArmPosition(armLevelOnePosition);
+            openServoLid();
         }
         if(armLevel == ArmLevel.ARMLEVEL_2){
             setArmPosition(armLevelTwoPosition);
+            openServoLid();
         }
         if(armLevel == ArmLevel.ARMLEVEL_3){
             setArmPosition(armLevelThreePosition);
+            openServoLid();
         }
         if(armLevel == ArmLevel.ARMLEVEL_CAP){
             if (firstCapLoop) {
                 capAngleOffset = 0;
                 firstCapLoop = false;
             }
+            closeServoLid();
             setArmPosition(armCapingPosition + capAngleOffset);
+
+            if(turnOnI()){
+                I = armI;
+            }
+            else I = 0;
+
+            updatePIDCoeff();
+
         }
     }
 
@@ -150,6 +172,13 @@ public class Depositor {
         else if (armLevel == ArmLevel.ARMLEVEL_1 && Math.abs(armLevelOnePosition-v4bMotor.getCurrentPosition())<armPositionThreshold) return true;
         else if (armLevel == ArmLevel.ARMLEVEL_2 && Math.abs(armLevelTwoPosition-v4bMotor.getCurrentPosition())<armPositionThreshold) return true;
         else if (armLevel == ArmLevel.ARMLEVEL_3 && Math.abs(armLevelThreePosition-v4bMotor.getCurrentPosition())<armPositionThreshold) return true;
+        else return false;
+    }
+
+    public boolean turnOnI(){
+        if (armLevel == ArmLevel.ARMLEVEL_1 && Math.abs(armLevelOnePosition-v4bMotor.getCurrentPosition())<armIntegralThreshold) return true;
+        else if (armLevel == ArmLevel.ARMLEVEL_2 && Math.abs(armLevelTwoPosition-v4bMotor.getCurrentPosition())<armIntegralThreshold) return true;
+        else if (armLevel == ArmLevel.ARMLEVEL_3 && Math.abs(armLevelThreePosition-v4bMotor.getCurrentPosition())<armIntegralThreshold) return true;
         else return false;
     }
 

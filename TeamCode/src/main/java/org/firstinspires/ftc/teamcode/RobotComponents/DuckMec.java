@@ -1,33 +1,34 @@
 package org.firstinspires.ftc.teamcode.RobotComponents;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.hardware.CRServo;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
+
 @Config
 public class DuckMec {
     public HardwareMap hwMap;
 
-    public CRServo duckServo;
+    public Motor duckMotor;
 
     public boolean duckMecIsRunning = false;
 
-    public static double duckSpeed = 1;
+    public static double duckSpeed = .25;
 
     public DuckMec(HardwareMap ahw){
         hwMap = ahw;
-        duckServo = hwMap.crservo.get("duckServo");
+        duckMotor = new Motor(ahw, "duckMotor", Motor.GoBILDA.RPM_312);
     }
 
     public void runDuckMec(boolean redSide){
-        if(redSide) duckServo.setPower(duckSpeed);
-        else duckServo.setPower(-1*duckSpeed);
+        if(redSide) duckMotor.set(duckSpeed);
+        else duckMotor.set(-1*duckSpeed);
 
         duckMecIsRunning = true;
     }
 
     public void stopDuckMec(){
-        duckServo.setPower(0);
+        duckMotor.set(0);
 
         duckMecIsRunning = false;
     }

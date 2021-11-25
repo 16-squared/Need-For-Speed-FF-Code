@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.RobotComponents.Depositor;
-import org.firstinspires.ftc.teamcode.RobotComponents.DrivetrainNoVelo;
+import org.firstinspires.ftc.teamcode.RobotComponents.Drivetrain;
 import org.firstinspires.ftc.teamcode.RobotComponents.DuckMec;
 import org.firstinspires.ftc.teamcode.RobotComponents.Intake;
 
@@ -21,7 +21,7 @@ public class MainTeleopBlue extends LinearOpMode {
     @Override
     public void runOpMode(){
         Depositor depositor = new Depositor(hardwareMap);
-        DrivetrainNoVelo drivetrain = new DrivetrainNoVelo(hardwareMap);
+        Drivetrain drivetrain = new Drivetrain(hardwareMap);
         GamepadEx pad1 = new GamepadEx(gamepad1);
         GamepadEx pad2 = new GamepadEx(gamepad2);
         Intake intake = new Intake(hardwareMap);
@@ -44,8 +44,8 @@ public class MainTeleopBlue extends LinearOpMode {
 
             //dt powers
             //drivetrain.setDrivePowers(pad1.getLeftY(), pad1.getRightX());
-            //drivetrain.setDrivePowerAccelerationCurve(pad1.getLeftY(), pad1.getRightX(), drivetrain.leftMotorOne.motor.getPower(), drivetrain.rightMotorOne.motor.getPower());
-            drivetrain.setDrivePowerWithLUT(pad1.getLeftY(), pad1.getRightX(), drivetrain.leftMotorOne.motor.getPower(), drivetrain.rightMotorOne.motor.getPower());
+            //drivetrain.setDrivePowerAccelerationCurve(pad1.getLeftY(), pad1.getRightX(), drivetrain.leftFrontMotor.motor.getPower(), drivetrain.rightFrontMotor.motor.getPower());
+            //drivetrain.setDrivePowerWithLUT(pad1.getLeftY(), pad1.getRightX(), drivetrain.leftMotorOne.motor.getPower(), drivetrain.rightMotorOne.motor.getPower());
 
 
 
@@ -148,8 +148,8 @@ public class MainTeleopBlue extends LinearOpMode {
 
             //duck mec
                     //toggle duck mec (press b)
-            if(gamepad2.b) duckMec.duckServo.setPower(-1);
-            else duckMec.duckServo.setPower(0);
+            if(gamepad2.b) duckMec.duckMotor.setPower(-1);
+            else duckMec.duckMotor.setPower(0);
 
             //intake controls
                   //toggle intake forwards and off (press a)
@@ -183,8 +183,8 @@ public class MainTeleopBlue extends LinearOpMode {
 
 */
             telemetry.addData("stick", (pad1.getLeftY() * drivetrain.speedMultiplier + pad1.getRightX() * drivetrain.turnMultiplier) - drivetrain.leftMotorOne.motor.getPower());
-            telemetry.addData("left motor", drivetrain.leftMotorOne.motor.getPower());
-            telemetry.addData("right motor", drivetrain.rightMotorOne.motor.getPower());
+         //   telemetry.addData("left motor", drivetrain.leftMotorOne.motor.getPower());
+        //    telemetry.addData("right motor", drivetrain.rightMotorOne.motor.getPower());
             telemetry.addData("arm position", depositor.v4bMotor.getCurrentPosition());
             telemetry.addData("arm state", depositor.armLevel);
             telemetry.addData("arm State Change", intake.armStateChange);
@@ -195,10 +195,10 @@ public class MainTeleopBlue extends LinearOpMode {
 
 
             TelemetryPacket packet = new TelemetryPacket();
-            packet.put("left velocity", drivetrain.leftMotorOne.getCorrectedVelocity());
-            packet.put("left power", drivetrain.leftMotorOne.motor.getPower());
-            packet.put("right velocity", drivetrain.rightMotorOne.getCorrectedVelocity());
-            packet.put("right power", drivetrain.rightMotorOne.motor.getPower());
+          //  packet.put("left velocity", drivetrain.leftMotorOne.getCorrectedVelocity());
+            //packet.put("left power", drivetrain.leftMotorOne.motor.getPower());
+            //packet.put("right velocity", drivetrain.rightMotorOne.getCorrectedVelocity());
+            //packet.put("right power", drivetrain.rightMotorOne.motor.getPower());
             dashboard.sendTelemetryPacket(packet);
 
 

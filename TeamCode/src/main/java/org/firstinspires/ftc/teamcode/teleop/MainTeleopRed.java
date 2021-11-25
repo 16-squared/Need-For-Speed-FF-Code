@@ -5,16 +5,19 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.RobotComponents.Depositor;
-import org.firstinspires.ftc.teamcode.RobotComponents.DrivetrainNoVelo;
+import org.firstinspires.ftc.teamcode.RobotComponents.Drivetrain;
 import org.firstinspires.ftc.teamcode.RobotComponents.DuckMec;
 import org.firstinspires.ftc.teamcode.RobotComponents.Intake;
-import org.firstinspires.ftc.teamcode.old.Drivetrain;
 
 @Config
 @TeleOp(name = "Red TeleOP", group = "Linear Opmode")
@@ -23,15 +26,29 @@ public class MainTeleopRed extends LinearOpMode {
     @Override
     public void runOpMode(){
         Depositor depositor = new Depositor(hardwareMap);
-        DrivetrainNoVelo drivetrain = new DrivetrainNoVelo(hardwareMap);
+        Drivetrain drivetrain = new Drivetrain(hardwareMap);
         GamepadEx pad1 = new GamepadEx(gamepad1);
         GamepadEx pad2 = new GamepadEx(gamepad2);
         Intake intake = new Intake(hardwareMap);
         DuckMec duckMec = new DuckMec(hardwareMap);
         FtcDashboard dashboard = FtcDashboard.getInstance();
 
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.mode = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled = false;
+        BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+
+
         boolean depositorDoorHasSwitched = false;
         boolean openDepositorDoor = false;
+
+        double offSetAngle = 0;
+        double heading;
+
 
 
         boolean rightTriggerDownLastLoop = false;
@@ -45,9 +62,17 @@ public class MainTeleopRed extends LinearOpMode {
         //controller one
 
             //dt powers
-            //drivetrain.setDrivePowers(pad1.getLeftY(), pad1.getRightX());
-            //drivetrain.setDrivePowerAccelerationCurve(pad1.getLeftY(), pad1.getRightX(), drivetrain.leftMotorOne.motor.getPower(), drivetrain.rightMotorOne.motor.getPower());
-            drivetrain.setDrivePowerWithLUT(pad1.getLeftY(), pad1.getRightX(), drivetrain.leftMotorOne.motor.getPower(), drivetrain.rightMotorOne.motor.getPower());
+
+            Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
+            double ly = gamepad1.left_stick_y;
+            double lx = gamepad1.left_stick_x;
+            double rx = gamepad1.right_stick_x;
+
+            heading = angles.firstAngle - offSetAngle + Math.toRadians(270);
+            double speed = Math.hypot(ly, lx);
+            double y = speed * Math.sin(Math.atan2(ly, lx) - heading);
+            double x = speed * Math.cos(Math.atan2(ly, lx) - heading);
+            drivetrain.driveFieldCentric(x, y, rx);
 
 
 
@@ -150,8 +175,8 @@ public class MainTeleopRed extends LinearOpMode {
 
             //duck mec
                     //toggle duck mec (press b)
-            if(gamepad2.b) duckMec.duckServo.setPower(1);
-            else duckMec.duckServo.setPower(0);
+            if(gamepad2.b) duckMec.duckMotor.set(1);
+            else duckMec.duckMotor.set(0);
 
             //intake controls
                   //toggle intake forwards and off (press a)
@@ -184,9 +209,9 @@ public class MainTeleopRed extends LinearOpMode {
             } //todo change this method so you can hold the button and it will open the door once readyToDeposit is true
 
 */
-            telemetry.addData("stick", (pad1.getLeftY() * drivetrain.speedMultiplier + pad1.getRightX() * drivetrain.turnMultiplier) - drivetrain.leftMotorOne.motor.getPower());
-            telemetry.addData("left motor", drivetrain.leftMotorOne.motor.getPower());
-            telemetry.addData("right motor", drivetrain.rightMotorOne.motor.getPower());
+            //telemetry.addData("stick", (pad1.getLeftY() * drivetrain.speedMultiplier + pad1.getRightX() * drivetrain.turnMultiplier) - drivetrain.leftMotorOne.motor.getPower());
+            //telemetry.addData("left motor", drivetrain.leftMotorOne.motor.getPower());
+            //telemetry.addData("right motor", drivetrain.rightMotorOne.motor.getPower());
             telemetry.addData("arm position", depositor.v4bMotor.getCurrentPosition());
             telemetry.addData("arm state", depositor.armLevel);
             telemetry.addData("arm State Change", intake.armStateChange);
@@ -197,10 +222,10 @@ public class MainTeleopRed extends LinearOpMode {
 
 
             TelemetryPacket packet = new TelemetryPacket();
-            packet.put("left velocity", drivetrain.leftMotorOne.getCorrectedVelocity());
-            packet.put("left power", drivetrain.leftMotorOne.motor.getPower());
-            packet.put("right velocity", drivetrain.rightMotorOne.getCorrectedVelocity());
-            packet.put("right power", drivetrain.rightMotorOne.motor.getPower());
+            //packet.put("left velocity", drivetrain.leftMotorOne.getCorrectedVelocity());
+            //packet.put("left power", drivetrain.leftMotorOne.motor.getPower());
+            //packet.put("right velocity", drivetrain.rightMotorOne.getCorrectedVelocity());
+            //packet.put("right power", drivetrain.rightMotorOne.motor.getPower());
             dashboard.sendTelemetryPacket(packet);
 
 
