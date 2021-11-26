@@ -36,7 +36,7 @@ public class Intake {
 
     public Intake(HardwareMap awh){
         hwMap = awh;
-        intakeMotor = new MotorEx(hwMap, "intakeMotor", Motor.GoBILDA.RPM_435);
+        intakeMotor = new MotorEx(hwMap, "intakeMotor", Motor.GoBILDA.RPM_312);
         intakeMotor.setRunMode(Motor.RunMode.RawPower);
         intakeMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
         intakeMotor.setInverted(true);
