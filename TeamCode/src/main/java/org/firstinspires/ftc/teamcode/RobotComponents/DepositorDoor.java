@@ -8,8 +8,6 @@ public class DepositorDoor {
 
     HardwareMap hwMap;
 
-    Depositor depositor;
-
     public Servo depositorServo;
 
     ElapsedTime timer = new ElapsedTime();
@@ -23,20 +21,18 @@ public class DepositorDoor {
     public DepositorDoor(HardwareMap ahw){
         hwMap = ahw;
 
-        depositor = new Depositor(ahw);
+        depositorServo = hwMap.servo.get("depositorServo");
 
     }
 
     public void closeDepositor() {
-        if (depositor.readyToDeposit()) {
             depositorServo.setPosition(depositorServoClosedPosition);
             depositorDoorIsOpen = false;
         }
-    }
 
-    public void openDepositor() {
+    public void openDepositor(Boolean readyToDeposit) {
 
-        if (depositor.readyToDeposit()) {
+        if (readyToDeposit) {
             depositorServo.setPosition(depositorServoOpenPosition);
             depositorDoorIsOpen = false;
             timer.reset();
@@ -53,8 +49,8 @@ public class DepositorDoor {
         }
     }
 
-    public void depositorServoToggle(){
+    public void depositorServoToggle(Boolean readyToDeposit){
         if(depositorDoorIsOpen) closeDepositor();
-        else if(depositor.readyToDeposit()) openDepositor();
+        else if(readyToDeposit) openDepositor(true);
     }
 }

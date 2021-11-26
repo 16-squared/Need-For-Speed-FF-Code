@@ -18,6 +18,8 @@ public class Depositor {
 
    // Intake intake;
 
+    DepositorDoor door;
+
     public DcMotor v4bMotor;
 
     public Servo depositorServo, depositorLid, capServo;
@@ -64,6 +66,8 @@ public class Depositor {
 
     public Depositor(HardwareMap ahw){
         hwMap = ahw;
+
+        door = new DepositorDoor(hwMap);
        // intake = new Intake(hwMap);
        // v4bMotor = new MotorEx(hwMap, "arm", Motor.GoBILDA.RPM_117);
         v4bMotor = hwMap.get(DcMotor.class, "arm");
@@ -241,42 +245,6 @@ public class Depositor {
 
 
 
-    //depositor servo stuff
-    public static double depositorServoClosedPosition = 0, depositorServoOpenPosition = .3;
-
-    public boolean depositorDoorIsOpen = false;
-
-    public void closeDepositor() {
-        if (readyToDeposit()) {
-            depositorServo.setPosition(depositorServoClosedPosition);
-            depositorDoorIsOpen = false;
-        }
-    }
-
-    public void openDepositor() {
-
-        if (readyToDeposit()) {
-            depositorServo.setPosition(depositorServoOpenPosition);
-            depositorDoorIsOpen = false;
-            timer.reset();
-            timerStarted = true;
-        }
-    }
-
-
-    public void closeDepositorDoorTimer(){
-        if(timerStarted){
-            if(timer.milliseconds()>500){
-                closeDepositor();
-                timerStarted = false;
-            }
-        }
-    }
-
-    public void depositorServoToggle(){
-        if(depositorDoorIsOpen) closeDepositor();
-        else if(readyToDeposit()) openDepositor();
-    }
 
 
 
@@ -297,31 +265,6 @@ public class Depositor {
         if(armLevel==ArmLevel.ARMLEVEL_IN && Math.abs(armInPosition-v4bMotor.getCurrentPosition()) < armPositionThreshold) openDepositorLid();
         if(armIsOut()) closeDepositorLid();
     }
-
-
-
-
-/*
-
-
-    //change intake based on states of depositor
-
-    public void intakeControl(){
-        if(previousArmLevel != armLevel){
-            if(previousArmLevel == ArmLevel.ARMLEVEL_IN) {
-                intake.intakeStopperOut();
-                intake.stopIntake();
-            }
-            else if(armLevel == ArmLevel.ARMLEVEL_IN){
-                intake.intakeStopperOut();
-                intake.runIntake();
-            }
-        }
-    }
-
-
-*/
-
 
 
 }
