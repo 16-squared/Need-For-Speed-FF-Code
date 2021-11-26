@@ -18,7 +18,7 @@ public class Depositor {
 
    // Intake intake;
 
-    DepositorDoor door;
+   public DepositorDoor door;
 
     public DcMotor v4bMotor;
 
