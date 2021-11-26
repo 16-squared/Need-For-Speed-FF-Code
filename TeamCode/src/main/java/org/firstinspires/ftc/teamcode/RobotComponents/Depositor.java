@@ -31,6 +31,8 @@ public class Depositor {
 
     boolean timerStarted = false;
 
+    boolean firstIntegralLoop = true;
+
     public enum ArmLevel {
         ARMLEVEL_IN,  /* not extended out */
         ARMLEVEL_1,  /* extended out at height of low goal and neutral hub */
@@ -55,6 +57,8 @@ public class Depositor {
     public static double armP = 0.05, armD = 0, armI=0, armMG = 0;
 
     private double I = 0;
+
+    double lastTime = 0;
 
     public double totalError;
 
@@ -113,19 +117,15 @@ public class Depositor {
     public void updateArmPosition(){
         if (armLevel == ArmLevel.ARMLEVEL_IN) {
             setArmPosition(armInPosition);
-            openServoLid();
         }
         if(armLevel == ArmLevel.ARMLEVEL_1){
             setArmPosition(armLevelOnePosition);
-            openServoLid();
         }
         if(armLevel == ArmLevel.ARMLEVEL_2){
             setArmPosition(armLevelTwoPosition);
-            openServoLid();
         }
         if(armLevel == ArmLevel.ARMLEVEL_3){
             setArmPosition(armLevelThreePosition);
-            openServoLid();
         }
         if(armLevel == ArmLevel.ARMLEVEL_CAP){
             if (firstCapLoop) {
@@ -135,20 +135,21 @@ public class Depositor {
             closeServoLid();
             setArmPosition(armCapingPosition + capAngleOffset);
 
-            /*if(turnOnI()){
+        }
+                   /*if(turnOnI()){
                 I = armI;
             }
             else I = 0;
 */
-            updatePIDCoeff();
-            updateInt();
-
-        }
+        updatePIDCoeff();
+        updateInt();
     }
 
     public void updateInt(){
 
         double sp;
+        double time;
+        double deltaTime;
 
 
         while (true){
@@ -158,17 +159,25 @@ public class Depositor {
         else if (armLevel==ArmLevel.ARMLEVEL_3) sp =armLevelThreePosition;
         else {
             I = 0;
+            totalError = 0;
+            firstIntegralLoop = true;
             break;
         }
-        double lastTime = System.nanoTime() / 1e9d;
-        final double time = System.nanoTime() / 1e9d;
-        final double deltaTime = time - lastTime;
+       if(firstIntegralLoop) {
+           lastTime = System.nanoTime() / 1e9d;
+           firstIntegralLoop = false;
+       }
+        time = System.nanoTime() / 1e9d;
+        deltaTime = time - lastTime;
         lastTime = time;
 
         double error = sp-v4bMotor.getCurrentPosition();
 
         if (Math.abs(error) < armIntegralThreshold) totalError += error * deltaTime;
-        else totalError = 0;
+        else {
+            totalError = 0;
+            firstIntegralLoop = true;
+        }
         I = totalError*armI;
 
             break;
