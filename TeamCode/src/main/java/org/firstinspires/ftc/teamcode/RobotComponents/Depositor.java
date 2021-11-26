@@ -56,6 +56,8 @@ public class Depositor {
 
     private double I = 0;
 
+    public double totalError;
+
     public Depositor(HardwareMap ahw){
         hwMap = ahw;
        // intake = new Intake(hwMap);
@@ -68,6 +70,9 @@ public class Depositor {
         capServo = hwMap.servo.get("capServo");
 
         depositorLid = hwMap.servo.get("lidServo");
+
+        totalError=0;
+
     }
 
     public void setCapAngleOffset(boolean dpadUp, boolean dpadDown){
@@ -82,7 +87,7 @@ public class Depositor {
     /*    double pv = v4bMotor.getCurrentPosition();
         double error = sp - pv; */
 
-        double pidf = armPID.calculate(v4bMotor.getCurrentPosition(), sp) + armMG * Math.sin(Math.toRadians(ticksToArmAngle(sp)));
+        double pidf = armPID.calculate(v4bMotor.getCurrentPosition(), sp) + armMG * Math.sin(Math.toRadians(ticksToArmAngle(sp))) + I;
         v4bMotor.setPower(Range.clip(pidf, -1, 1));
           //      v4bMotor.set(pidf);
 
@@ -130,14 +135,44 @@ public class Depositor {
             closeServoLid();
             setArmPosition(armCapingPosition + capAngleOffset);
 
-            if(turnOnI()){
+            /*if(turnOnI()){
                 I = armI;
             }
             else I = 0;
-
+*/
             updatePIDCoeff();
+            updateInt();
 
         }
+    }
+
+    public void updateInt(){
+
+        double sp;
+
+
+        while (true){
+        if(armLevel==ArmLevel.ARMLEVEL_IN) sp = armInPosition;
+        else if(armLevel==ArmLevel.ARMLEVEL_1) sp = armLevelOnePosition;
+        else if(armLevel==ArmLevel.ARMLEVEL_2) sp = armLevelTwoPosition;
+        else if (armLevel==ArmLevel.ARMLEVEL_3) sp =armLevelThreePosition;
+        else {
+            I = 0;
+            break;
+        }
+        double lastTime = System.nanoTime() / 1e9d;
+        final double time = System.nanoTime() / 1e9d;
+        final double deltaTime = time - lastTime;
+        lastTime = time;
+
+        double error = sp-v4bMotor.getCurrentPosition();
+
+        if (Math.abs(error) < armIntegralThreshold) totalError += error * deltaTime;
+        else totalError = 0;
+        I = totalError*armI;
+
+            break;
+    }
     }
 
 
