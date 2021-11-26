@@ -97,13 +97,6 @@ public class Depositor {
 
     }
 
-    public void openServoLid(){
-        depositorLid.setPosition(servoLidOpenPosition);
-    }
-
-    public void closeServoLid(){
-        depositorLid.setPosition(depositorServoClosedPosition);
-    }
 
     public void updatePIDCoeff(){
         armPID = new PIDController(armP, I, armD);
@@ -132,7 +125,7 @@ public class Depositor {
                 capAngleOffset = 0;
                 firstCapLoop = false;
             }
-            closeServoLid();
+            closeDepositorLid();
             setArmPosition(armCapingPosition + capAngleOffset);
 
         }
@@ -143,6 +136,7 @@ public class Depositor {
 */
         updatePIDCoeff();
         updateInt();
+        depositorLidControl();
     }
 
     public void updateInt(){
@@ -219,12 +213,30 @@ public class Depositor {
         else return false;
     }
 
+    public void setArmAngle(double ticks){
+        setArmPosition(ticks);
+    }
+
+
+
+    /*
     public boolean turnOnI(){
         if (armLevel == ArmLevel.ARMLEVEL_1 && Math.abs(armLevelOnePosition-v4bMotor.getCurrentPosition())<armIntegralThreshold) return true;
         else if (armLevel == ArmLevel.ARMLEVEL_2 && Math.abs(armLevelTwoPosition-v4bMotor.getCurrentPosition())<armIntegralThreshold) return true;
         else if (armLevel == ArmLevel.ARMLEVEL_3 && Math.abs(armLevelThreePosition-v4bMotor.getCurrentPosition())<armIntegralThreshold) return true;
         else return false;
     }
+
+     */
+
+
+
+
+
+
+
+
+
 
 
 
@@ -268,9 +280,25 @@ public class Depositor {
 
 
 
-    public void setArmAngle(double ticks){
-        setArmPosition(ticks);
+
+
+
+    //depositor lid control
+
+    public void closeDepositorLid(){
+        depositorLid.setPosition(servoLidClosePosition);
     }
+
+    public void openDepositorLid(){
+        depositorLid.setPosition(servoLidOpenPosition);
+    }
+
+    public void depositorLidControl(){
+        if(armLevel==ArmLevel.ARMLEVEL_IN && Math.abs(armInPosition-v4bMotor.getCurrentPosition()) < armPositionThreshold) openDepositorLid();
+        if(armIsOut()) closeDepositorLid();
+    }
+
+
 
 
 /*
