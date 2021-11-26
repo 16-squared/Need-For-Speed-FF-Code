@@ -8,8 +8,6 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -52,7 +50,11 @@ public class MainTeleopRed extends LinearOpMode {
 
 
 
-        boolean rightTriggerDownLastLoop = false;
+        boolean a1DownLastLoop = false;
+
+        boolean intakeReversedLastLoop = false;
+        boolean intakeToggledLastLoop = false;
+
 
         waitForStart();
 
@@ -82,7 +84,7 @@ public class MainTeleopRed extends LinearOpMode {
             depositor.setPreviousArmLevel();
 
 
-            if (pad1.gamepad.a){
+            if (gamepad1.a){
                 intake.runIntake();
             }
 
@@ -95,13 +97,16 @@ public class MainTeleopRed extends LinearOpMode {
             if(gamepad1.right_bumper){
                 depositor.setArmLevelIn();
             }
+
+
+            //cap
          /*   //Bring arm to cap (press LB)
             if(pad1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)){
                 depositor.setArmLevelCapping();
             }
             //Adjust capping height (dpad up and down)
             depositor.setCapAngleOffset(pad2.isDown(GamepadKeys.Button.DPAD_UP), pad2.isDown(GamepadKeys.Button.DPAD_DOWN));
-*/
+
             if(depositor.armLevel != Depositor.ArmLevel.ARMLEVEL_CAP) {
                 //Bring arm to low goal (press Left Trigger)
                 if(pad1.gamepad.left_trigger>.05){
@@ -117,14 +122,16 @@ public class MainTeleopRed extends LinearOpMode {
                 }
             }
 
+
+          */
                 //open depositor
             if(gamepad1.a){
-                if(!depositor.depositorDoorIsOpen && !rightTriggerDownLastLoop && depositor.readyToDeposit()) {
-                    depositor.openDepositor();
-                    rightTriggerDownLastLoop = true;
+                if(!depositor.door.depositorDoorIsOpen && !a1DownLastLoop && depositor.readyToDeposit()) {
+                    depositor.door.openDepositor(true);
+                    a1DownLastLoop = true;
                 }
             }
-            else rightTriggerDownLastLoop = false;
+            else a1DownLastLoop = false;
 
 
             //reset v4b encoder
@@ -180,19 +187,29 @@ public class MainTeleopRed extends LinearOpMode {
 
             //intake controls
                   //toggle intake forwards and off (press a)
-            if(pad2.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) intake.toggleIntakeForwards();
+            if(gamepad2.a && !intakeToggledLastLoop) {
+                intake.toggleIntakeForwards();
+                intakeToggledLastLoop = true;
+            }
+
+            if (!gamepad2.a) intakeToggledLastLoop = false;
 
             if(pad2.getButton(GamepadKeys.Button.LEFT_BUMPER)) intake.intakeStopperIn();
 
 
                   //intake reversal (hold x)
-            if(pad2.isDown(GamepadKeys.Button.X)) intake.reverseIntake();
-            if(pad2.wasJustReleased(GamepadKeys.Button.X)) intake.returnToPreviousIntakeState();
-
+            if(gamepad2.x){
+                intake.reverseIntake();
+                intakeReversedLastLoop = true;
+            }
+            if(!gamepad2.x && intakeReversedLastLoop) {
+                intake.returnToPreviousIntakeState();
+                intakeReversedLastLoop = false;
+            }
 
            depositor.updateArmPosition();
 
-           depositor.closeDepositorDoorTimer();
+           depositor.door.closeDepositorDoorTimer();
 
           // depositor.intakeControl();
 
