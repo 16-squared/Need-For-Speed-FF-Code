@@ -19,7 +19,7 @@ public class Intake {
 
     public static double intakeSlowSpeed = .5, intakeFastSpeed = .8, intakeReversedSpeed = -.7;
 
-    public static double intakeStopperInPosition = .6, intakeStopperOutPosition = 0.05;
+    public static double intakeStopperDownPosition = .6, intakeStopperOutPosition = 0.05;
 
     public boolean intakeStopperIsOut = true, intakeRunningForwards = false, armStateChange = false;;
 
@@ -115,7 +115,7 @@ public class Intake {
     }
 
     public void intakeStopperIn(){
-        intakeStopper.setPosition(intakeStopperInPosition);
+        intakeStopper.setPosition(intakeStopperDownPosition);
         intakeStopperIsOut = false;
     }
 
