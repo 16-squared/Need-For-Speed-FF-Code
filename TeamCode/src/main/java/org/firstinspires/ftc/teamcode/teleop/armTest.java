@@ -23,6 +23,7 @@ public class armTest extends LinearOpMode {
         Intake intake = new Intake(hardwareMap);
        DuckMec duckMec = new DuckMec(hardwareMap);
         double armTarget = 0;
+        boolean runMotor = true;
 
         boolean depositorDoorHasSwitched = false;
         boolean openDepositorDoor = false;
@@ -35,19 +36,20 @@ public class armTest extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            if(depositor.v4bMotor.getCurrentPosition()<340 && depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.a){
+            if(gamepad1.a || gamepad1.b || gamepad1.y || gamepad1.x) runMotor = true;
+            if(depositor.v4bMotor.getCurrentPosition()<340 && depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.a && runMotor){
                 depositor.setArmLevelIn();
             }
 
-            if(depositor.v4bMotor.getCurrentPosition()<340 && depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.b){
+            if(depositor.v4bMotor.getCurrentPosition()<340 && depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.b && runMotor){
                 depositor.setArmLevelOne();
             }
 
-            if(depositor.v4bMotor.getCurrentPosition()<340 && depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.x){
+            if(depositor.v4bMotor.getCurrentPosition()<340 && depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.x && runMotor){
                 depositor.setArmLevelTwo();
             }
 
-            if(depositor.v4bMotor.getCurrentPosition()<340 && depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.y){
+            if(depositor.v4bMotor.getCurrentPosition()<340 && depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.y && runMotor){
                 depositor.setArmLevelThree();
             }
 
@@ -55,6 +57,12 @@ public class armTest extends LinearOpMode {
                 depositor.v4bMotor.setPower(0);
             }
             else depositor.updateArmPosition();
+
+            if (gamepad1.dpad_up){
+                depositor.v4bMotor.setPower(0);
+
+                runMotor = false;
+            }
 
           //  depositor.v4bMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
          //   depositor.v4bMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

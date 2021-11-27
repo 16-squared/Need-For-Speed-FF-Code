@@ -52,7 +52,7 @@ public class Depositor {
 
     public static double armPositionThreshold = 5, armIntegralThreshold = 5;
 
-    public static double armInPosition = 0, armLevelOnePosition = 88, armLevelTwoPosition = -370, armLevelThreePosition = -280, armCapingPosition = 500, servoLidOpenPosition = 1, servoLidClosePosition = 0;
+    public static double armInPosition = 0, armLevelOnePosition = 88, armLevelTwoPosition = -350, armLevelThreePosition = -280, armCapingPosition = 500, servoLidOpenPosition = 1, servoLidClosePosition = 0;
 
     public double capAngleOffset;
 
@@ -96,7 +96,7 @@ public class Depositor {
         double error = sp - pv; */
 
         double pidf = armPID.calculate(v4bMotor.getCurrentPosition(), sp) + armMG * Math.sin(Math.toRadians(ticksToArmAngle(sp))) + I;
-        v4bMotor.setPower(Range.clip(pidf, -1, 1));
+        v4bMotor.setPower(Range.clip(pidf, -.7, .7));
           //      v4bMotor.set(pidf);
 
     }
