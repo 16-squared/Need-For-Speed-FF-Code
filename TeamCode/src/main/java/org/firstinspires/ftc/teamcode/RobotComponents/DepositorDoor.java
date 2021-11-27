@@ -11,8 +11,11 @@ public class DepositorDoor {
     public Servo depositorServo;
 
     ElapsedTime timer = new ElapsedTime();
-
     boolean timerStarted = false;
+
+    ElapsedTime armTimer = new ElapsedTime();
+    boolean armTimerStarted = false;
+
 
     public static double depositorServoClosedPosition = 0, depositorServoOpenPosition = .3;
 
@@ -28,6 +31,8 @@ public class DepositorDoor {
     public void closeDepositor() {
             depositorServo.setPosition(depositorServoClosedPosition);
             depositorDoorIsOpen = false;
+            armTimer.reset();
+            armTimerStarted = true;
         }
 
     public void openDepositor(Boolean readyToDeposit) {
@@ -47,6 +52,14 @@ public class DepositorDoor {
                 timerStarted = false;
             }
         }
+    }
+
+    public boolean bringInArm(){
+        if(armTimerStarted && armTimer.milliseconds()>250) {
+            armTimerStarted = false;
+            return true;
+        }
+        else return false;
     }
 
     public void depositorServoToggle(Boolean readyToDeposit){

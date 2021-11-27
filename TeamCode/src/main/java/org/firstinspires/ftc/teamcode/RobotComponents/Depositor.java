@@ -141,6 +141,8 @@ public class Depositor {
         updatePIDCoeff();
         updateInt();
         depositorLidControl();
+
+        if(door.bringInArm()) armLevel = ArmLevel.ARMLEVEL_IN;
     }
 
     public void updateInt(){

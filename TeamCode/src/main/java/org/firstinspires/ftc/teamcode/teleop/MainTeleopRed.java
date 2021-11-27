@@ -26,8 +26,6 @@ public class MainTeleopRed extends LinearOpMode {
     public void runOpMode(){
         Depositor depositor = new Depositor(hardwareMap);
         Drivetrain drivetrain = new Drivetrain(hardwareMap);
-        GamepadEx pad1 = new GamepadEx(gamepad1);
-        GamepadEx pad2 = new GamepadEx(gamepad2);
         Intake intake = new Intake(hardwareMap);
         DuckMec duckMec = new DuckMec(hardwareMap);
         FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -134,8 +132,8 @@ public class MainTeleopRed extends LinearOpMode {
             else a1DownLastLoop = false;
 
 
-            //reset v4b encoder
-            if(pad1.gamepad.back){
+            //reset angle for fieldcentric
+            if(gamepad1.back){
                offSetAngle = angles.firstAngle;
             }
 
