@@ -17,7 +17,7 @@ public class DepositorDoor {
     boolean armTimerStarted = false;
 
 
-    public static double depositorServoClosedPosition = 0, depositorServoOpenPosition = .3;
+    public static double depositorServoClosedPosition = 0.1, depositorServoOpenPosition = .7;
 
     public boolean depositorDoorIsOpen = false;
 

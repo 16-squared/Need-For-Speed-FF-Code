@@ -37,26 +37,23 @@ public class armTest extends LinearOpMode {
         while (opModeIsActive()) {
 
             if(gamepad1.a || gamepad1.b || gamepad1.y || gamepad1.x) runMotor = true;
-            if(depositor.v4bMotor.getCurrentPosition()<340 && depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.a && runMotor){
+            if(depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.a && runMotor){
                 depositor.setArmLevelIn();
             }
 
-            if(depositor.v4bMotor.getCurrentPosition()<340 && depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.b && runMotor){
+            if(depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.b && runMotor){
                 depositor.setArmLevelOne();
             }
 
-            if(depositor.v4bMotor.getCurrentPosition()<340 && depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.x && runMotor){
+            if(depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.x && runMotor){
                 depositor.setArmLevelTwo();
             }
 
-            if(depositor.v4bMotor.getCurrentPosition()<340 && depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.y && runMotor){
+            if(depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.y && runMotor){
                 depositor.setArmLevelThree();
             }
 
-            if(depositor.v4bMotor.getCurrentPosition()>340 || depositor.v4bMotor.getCurrentPosition()<-450){
-                depositor.v4bMotor.setPower(0);
-            }
-            else depositor.updateArmPosition();
+            depositor.updateArmPosition();
 
             if (gamepad1.dpad_up){
                 depositor.v4bMotor.setPower(0);

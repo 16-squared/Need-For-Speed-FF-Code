@@ -51,13 +51,13 @@ public class Depositor {
 
     private boolean firstCapLoop = true;
 
-    public static double armPositionThreshold = 5, armIntegralThreshold = 5;
+    public static double armPositionThreshold = 5, armIntegralThreshold = 1500;
 
     public static double armInPosition = 0, armLevelOnePosition = -1475.0, armLevelTwoPosition = 5150.0, armLevelThreePosition = 4000.0, armCapingPosition = 500, servoLidOpenPosition = 1, servoLidClosePosition = 0;
 
     public double capAngleOffset;
 
-    public static double armP = 0.0001, armD = 0, armI=0, armMG = 0;
+    public static double armP = 0.0003, armD = 0, armI=0.00045, armMG = 0;
 
     private double I = 0;
 
@@ -73,7 +73,7 @@ public class Depositor {
        // v4bMotor = new MotorEx(hwMap, "arm", Motor.GoBILDA.RPM_117);
         v4bMotor = hwMap.get(DcMotor.class, "arm");
         v4bMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        v4bMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        //v4bMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         depositorServo = hwMap.servo.get("depositorServo");
 
@@ -97,7 +97,7 @@ public class Depositor {
     /*    double pv = v4bMotor.getCurrentPosition();
         double error = sp - pv; */
 
-        double pidf = armPID.calculate(v4bMotor.getCurrentPosition(), sp) + armMG * Math.sin(Math.toRadians(ticksToArmAngle(sp/10))) + I;
+        double pidf = -1*(armPID.calculate(v4bMotor.getCurrentPosition(), sp) + armMG * Math.sin(Math.toRadians(ticksToArmAngle(sp/10))) + I);
         v4bMotor.setPower(Range.clip(pidf, -.6, .6));
           //      v4bMotor.set(pidf);
 
