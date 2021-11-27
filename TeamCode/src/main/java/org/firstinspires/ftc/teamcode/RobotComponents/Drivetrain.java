@@ -29,10 +29,10 @@ public class Drivetrain {
     public Drivetrain(HardwareMap ahw){
         hwMap = ahw;
         depositor = new Depositor(hwMap);
-        rightFrontMotor = new Motor(hwMap, "rightFrontMotor", Motor.GoBILDA.RPM_312);
-        rightBackMotor = new Motor(hwMap, "rightBackMotor", Motor.GoBILDA.RPM_312);
-        leftFrontMotor = new Motor(hwMap, "leftFrontMotor", Motor.GoBILDA.RPM_312);
-        leftBackMotor = new Motor(hwMap, "leftBackMotor", Motor.GoBILDA.RPM_312);
+        rightFrontMotor = new Motor(hwMap, "frontRight", Motor.GoBILDA.RPM_312);
+        rightBackMotor = new Motor(hwMap, "backRight", Motor.GoBILDA.RPM_312);
+        leftFrontMotor = new Motor(hwMap, "frontLeft", Motor.GoBILDA.RPM_312);
+        leftBackMotor = new Motor(hwMap, "backLeft", Motor.GoBILDA.RPM_312);
 
         rightFrontMotor.setInverted(true);
         rightBackMotor.setInverted(true);

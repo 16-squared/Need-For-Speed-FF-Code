@@ -52,11 +52,11 @@ public class Depositor {
 
     public static double armPositionThreshold = 5, armIntegralThreshold = 5;
 
-    public static double armInPosition = 0, armLevelOnePosition = 75, armLevelTwoPosition = 200, armLevelThreePosition = -268, armCapingPosition = 500, servoLidOpenPosition = 1, servoLidClosePosition = 0;
+    public static double armInPosition = 0, armLevelOnePosition = 88, armLevelTwoPosition = -370, armLevelThreePosition = -280, armCapingPosition = 500, servoLidOpenPosition = 1, servoLidClosePosition = 0;
 
     public double capAngleOffset;
 
-    public static double armP = 0.05, armD = 0, armI=0, armMG = 0;
+    public static double armP = 0.01, armD = 0, armI=0, armMG = 0;
 
     private double I = 0;
 
@@ -75,9 +75,9 @@ public class Depositor {
 
         depositorServo = hwMap.servo.get("depositorServo");
 
-        capServo = hwMap.servo.get("capServo");
+      //  capServo = hwMap.servo.get("capServo");
 
-        depositorLid = hwMap.servo.get("lidServo");
+        depositorLid = hwMap.servo.get("lid");
 
         totalError=0;
 

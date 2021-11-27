@@ -27,24 +27,49 @@ public class armTest extends LinearOpMode {
         boolean depositorDoorHasSwitched = false;
         boolean openDepositorDoor = false;
 
+
         waitForStart();
 
+          depositor.v4bMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+           depositor.v4bMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         while (opModeIsActive()) {
-            depositor.v4bMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            depositor.v4bMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            if(depositor.v4bMotor.getCurrentPosition()<340 && depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.a){
+                depositor.setArmLevelIn();
+            }
+
+            if(depositor.v4bMotor.getCurrentPosition()<340 && depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.a){
+                depositor.setArmLevelOne();
+            }
+
+            if(depositor.v4bMotor.getCurrentPosition()<340 && depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.a){
+                depositor.setArmLevelTwo();
+            }
+
+            if(depositor.v4bMotor.getCurrentPosition()<340 && depositor.v4bMotor.getCurrentPosition()>-450 && gamepad1.a){
+                depositor.setArmLevelThree();
+            }
+
+            if(depositor.v4bMotor.getCurrentPosition()>340 || depositor.v4bMotor.getCurrentPosition()<-450){
+                depositor.v4bMotor.setPower(0);
+            }
+            else depositor.updateArmPosition();
+
+          //  depositor.v4bMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+         //   depositor.v4bMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 /*
             if(pad1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER )||pad1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)){
                 depositor.v4bMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             } */
 
-            if (gamepad1.dpad_up && armTarget < 499) armTarget += 1;
-            if (gamepad1.dpad_down && armTarget > 1) armTarget -= 1;
-
+        //    if (gamepad1.dpad_up && armTarget < 499) armTarget += 1;
+         //   if (gamepad1.dpad_down && armTarget > 1) armTarget -= 1;
 
             //depositor.v4bMotor.setPower(1);
 
 
-            depositor.setArmAngle(armTarget);
+           // depositor.setArmAngle(armTarget);
 
 
 

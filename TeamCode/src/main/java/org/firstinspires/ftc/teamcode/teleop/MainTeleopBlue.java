@@ -49,7 +49,7 @@ public class MainTeleopBlue extends LinearOpMode {
 
 
 
-
+/*
             //arm positions
             depositor.setPreviousArmLevel();
 
@@ -73,7 +73,7 @@ public class MainTeleopBlue extends LinearOpMode {
             }
             //Adjust capping height (dpad up and down)
             depositor.setCapAngleOffset(pad2.isDown(GamepadKeys.Button.DPAD_UP), pad2.isDown(GamepadKeys.Button.DPAD_DOWN));
-*/
+
             if(depositor.armLevel != Depositor.ArmLevel.ARMLEVEL_CAP) {
                 //Bring arm to low goal (press B)
                 if(pad1.gamepad.b){
@@ -107,7 +107,7 @@ public class MainTeleopBlue extends LinearOpMode {
 
            // if(pad1.gamepad.left_bumper) intake.intakeStopperIn();
 
-            /*
+
             //code for toggling the depositor door with gamepad
 
             if(pad1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>.05 && !depositorDoorHasSwitched){
@@ -122,7 +122,7 @@ public class MainTeleopBlue extends LinearOpMode {
                 depositor.depositorServoToggle();
                 depositorDoorHasSwitched = true;
             }
-*/
+
 
 
 
@@ -181,7 +181,7 @@ public class MainTeleopBlue extends LinearOpMode {
                 depositor.depositorServoToggle();
             } //todo change this method so you can hold the button and it will open the door once readyToDeposit is true
 
-*/
+
             telemetry.addData("stick", (pad1.getLeftY() * drivetrain.speedMultiplier + pad1.getRightX() * drivetrain.turnMultiplier) - drivetrain.leftMotorOne.motor.getPower());
          //   telemetry.addData("left motor", drivetrain.leftMotorOne.motor.getPower());
         //    telemetry.addData("right motor", drivetrain.rightMotorOne.motor.getPower());
@@ -202,7 +202,7 @@ public class MainTeleopBlue extends LinearOpMode {
             dashboard.sendTelemetryPacket(packet);
 
 
-
+*/
         }
     }
 }
