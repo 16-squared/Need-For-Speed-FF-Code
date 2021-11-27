@@ -174,35 +174,40 @@ public class MainTeleopRed extends LinearOpMode {
             //depositor.setCapAngleOffset(pad2.isDown(GamepadKeys.Button.DPAD_UP), pad2.isDown(GamepadKeys.Button.DPAD_DOWN));
 
 
-            if(gamepad2.dpad_down)depositor.setArmLevelIn();
+            if(gamepad2.y) depositor.setArmLevelIn();
 
-            if(gamepad2.dpad_up)depositor.setArmLevelThree();
+            if(gamepad2.x)depositor.setArmLevelOne();
 
-            if(gamepad2.dpad_left)depositor.setArmLevelOne();
+            if(gamepad2.a)depositor.setArmLevelTwo();
+
+            if(gamepad2.b)depositor.setArmLevelThree();
+
+
 
             //duck mec
-                    //toggle duck mec (press b)
+                    //toggle duck mec (hold RT) //todo
             if(gamepad2.b) duckMec.duckMotor.set(.25);
             else duckMec.duckMotor.set(0);
 
             //intake controls
-                  //toggle intake forwards and off (press a)
-            if(gamepad2.a && !intakeToggledLastLoop) {
+                  //toggle intake forwards and off (press LB)
+            if(gamepad2.left_bumper && !intakeToggledLastLoop) {
                 intake.toggleIntakeForwards();
                 intakeToggledLastLoop = true;
             }
 
-            if (!gamepad2.a) intakeToggledLastLoop = false;
+            if (!gamepad2.left_bumper) intakeToggledLastLoop = false;
 
-            if(pad2.getButton(GamepadKeys.Button.LEFT_BUMPER)) intake.intakeStopperIn();
+            //Bring intake stopper up (press LT)
+            if(gamepad2.left_trigger>.05) intake.intakeStopperIn();
 
 
-                  //intake reversal (hold x)
-            if(gamepad2.x){
+                  //intake reversal (hold Dpad down)
+            if(gamepad2.dpad_down){
                 intake.reverseIntake();
                 intakeReversedLastLoop = true;
             }
-            if(!gamepad2.x && intakeReversedLastLoop) {
+            if(!gamepad2.dpad_down && intakeReversedLastLoop) {
                 intake.returnToPreviousIntakeState();
                 intakeReversedLastLoop = false;
             }
