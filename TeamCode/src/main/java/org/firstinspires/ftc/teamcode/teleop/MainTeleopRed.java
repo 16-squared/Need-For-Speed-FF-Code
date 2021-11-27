@@ -69,7 +69,7 @@ public class MainTeleopRed extends LinearOpMode {
             double lx = gamepad1.left_stick_x;
             double rx = gamepad1.right_stick_x;
 
-            heading = angles.firstAngle - offSetAngle + Math.toRadians(270);
+            heading = angles.firstAngle - offSetAngle + Math.toRadians(90);
             double speed = Math.hypot(ly, lx);
             double y = speed * Math.sin(Math.atan2(ly, lx) - heading);
             double x = speed * Math.cos(Math.atan2(ly, lx) - heading);
@@ -183,8 +183,8 @@ public class MainTeleopRed extends LinearOpMode {
 
 
             //duck mec
-                    //toggle duck mec (hold RT) //todo
-            if(gamepad2.b) duckMec.duckMotor.set(.25);
+                    //toggle duck mec (hold RT) //todo make trigger control the speed of duck mec
+            if(gamepad2.right_trigger>.05) duckMec.duckMotor.set(.25);
             else duckMec.duckMotor.set(0);
 
             //intake controls
@@ -214,8 +214,6 @@ public class MainTeleopRed extends LinearOpMode {
 
            depositor.door.closeDepositorDoorTimer();
 
-          // depositor.intakeControl();
-
            intake.updateIntake();
 
 
@@ -237,6 +235,7 @@ public class MainTeleopRed extends LinearOpMode {
             telemetry.addData("arm State Change", intake.armStateChange);
             telemetry.addData("intake", intake.intakeState);
             telemetry.addData("intake stopper", intake.intakeStopperIsOut);
+            telemetry.addData("offset angle", offSetAngle);
             telemetry.update();
 
 

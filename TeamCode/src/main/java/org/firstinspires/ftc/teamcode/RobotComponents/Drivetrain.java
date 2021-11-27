@@ -34,8 +34,8 @@ public class Drivetrain {
         leftFrontMotor = new Motor(hwMap, "frontLeft", Motor.GoBILDA.RPM_312);
         leftBackMotor = new Motor(hwMap, "backLeft", Motor.GoBILDA.RPM_312);
 
-        rightFrontMotor.setInverted(true);
-        rightBackMotor.setInverted(true);
+       rightFrontMotor.setInverted(true);
+       rightBackMotor.setInverted(true);
 
         rightFrontMotor.setRunMode(Motor.RunMode.RawPower);
         rightBackMotor.setRunMode(Motor.RunMode.RawPower);
@@ -57,10 +57,11 @@ public class Drivetrain {
 
 
     public void driveFieldCentric(double x, double y, double rx) {
-       rightFrontMotor.motor.setPower(1 * (y + x + rx));
+
+      rightFrontMotor.motor.setPower(1 * (y + x + rx));
         leftFrontMotor.motor.setPower(1 * (y - x - rx));
-        leftBackMotor.motor.setPower(1 * (y - x + rx));
-        rightBackMotor.motor.setPower(1 * (y + x - rx));
+        rightBackMotor.motor.setPower(1 * (y - x + rx));
+        leftBackMotor.motor.setPower(1 * (y + x - rx));
     }
 
 

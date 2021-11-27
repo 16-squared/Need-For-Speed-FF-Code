@@ -86,6 +86,9 @@ public class armTest extends LinearOpMode {
             telemetry.addData("arm power", depositor.v4bMotor.getPower());
             telemetry.update();
 
+
+
+
         }
     }
 }

@@ -17,9 +17,9 @@ public class Intake {
 
     Depositor depositor;
 
-    public static double intakeSlowSpeed = .5, intakeFastSpeed = .8, intakeReversedSpeed = -.7;
+    public static double intakeSlowSpeed = .7, intakeFastSpeed = .8, intakeReversedSpeed = -.7;
 
-    public static double intakeStopperDownPosition = .8, intakeStopperOutPosition = 0.0;
+    public static double intakeStopperDownPosition = 1.0, intakeStopperOutPosition = 0.0;
 
     public boolean intakeStopperIsOut = true, intakeRunningForwards = false, armStateChange = false;;
 
