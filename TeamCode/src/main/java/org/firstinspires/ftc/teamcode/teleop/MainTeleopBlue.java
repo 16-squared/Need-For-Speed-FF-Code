@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.RobotComponents.Depositor;
 import org.firstinspires.ftc.teamcode.RobotComponents.Drivetrain;
-import org.firstinspires.ftc.teamcode.RobotComponents.DuckMec;
 import org.firstinspires.ftc.teamcode.RobotComponents.Intake;
 
 @Config
@@ -25,7 +24,6 @@ public class MainTeleopBlue extends LinearOpMode {
         GamepadEx pad1 = new GamepadEx(gamepad1);
         GamepadEx pad2 = new GamepadEx(gamepad2);
         Intake intake = new Intake(hardwareMap);
-        DuckMec duckMec = new DuckMec(hardwareMap);
         FtcDashboard dashboard = FtcDashboard.getInstance();
 
         boolean depositorDoorHasSwitched = false;
@@ -145,11 +143,6 @@ public class MainTeleopBlue extends LinearOpMode {
             if(gamepad2.dpad_up)depositor.setArmLevelThree();
 
             if(gamepad2.dpad_left)depositor.setArmLevelOne();
-
-            //duck mec
-                    //toggle duck mec (press b)
-            if(gamepad2.b) duckMec.duckMotor.setPower(-1);
-            else duckMec.duckMotor.setPower(0);
 
             //intake controls
                   //toggle intake forwards and off (press a)
